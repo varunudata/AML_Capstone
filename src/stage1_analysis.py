@@ -111,20 +111,36 @@ def group_counts(df):
     results = {}
 
     # Country
-    results["by_country"] = df["Country"].value_counts().to_dict()
+    c_counts = df["Country"].value_counts()
+    results["by_country"] = c_counts.to_dict()
+    results["country_df"] = pd.DataFrame([
+        {"Country": str(c), "Rows": int(cnt), "Percentage": round(float(100 * cnt / len(df)), 2)}
+        for c, cnt in c_counts.items()
+    ])
 
     # Waterbody Type
-    results["by_waterbody"] = df["Waterbody Type"].value_counts().to_dict()
+    wb_counts = df["Waterbody Type"].value_counts()
+    results["by_waterbody"] = wb_counts.to_dict()
+    results["waterbody_df"] = pd.DataFrame([
+        {"Waterbody Type": str(wb), "Rows": int(cnt), "Percentage": round(float(100 * cnt / len(df)), 2)}
+        for wb, cnt in wb_counts.items()
+    ])
 
     # Year
     df_year = df["Date"].dt.year
     year_counts = df_year.value_counts().sort_index()
     results["by_year"] = year_counts.to_dict()
-    results["year_range"] = (int(year_counts.index.min()), int(year_counts.index.max()))
+    y_min, y_max = int(year_counts.index.min()), int(year_counts.index.max())
+    results["year_range"] = (y_min, y_max)
+    results["year_min"] = y_min
+    results["year_max"] = y_max
 
     # Area (top 20 + summary stats)
     area_counts = df["Area"].value_counts()
     results["area_top20"] = area_counts.head(20).to_dict()
+    results["unique_areas"] = int(area_counts.shape[0])
+    results["areas_lt_10"] = int((area_counts < 10).sum())
+    results["max_area_obs"] = int(area_counts.max())
     results["area_stats"] = {
         "n_distinct": int(area_counts.shape[0]),
         "max_rows": int(area_counts.max()),
@@ -137,6 +153,10 @@ def group_counts(df):
     }
 
     return results
+
+
+# Backwards compatibility alias
+group_distributions = group_counts
 
 
 def plausibility_check(df):
@@ -186,8 +206,29 @@ def reverse_engineer_ccme_classes(df):
     at_100 = (df[TARGET_CONT] == 100.0).sum()
     results["values_at_100"] = int(at_100)
     results["pct_at_100"] = round(100 * at_100 / len(df), 2)
+    results["n_capped_100"] = int(at_100)
+    results["pct_capped_100"] = round(100 * at_100 / len(df), 2)
+
+    # Derived Class Thresholds summary DataFrame
+    summary_rows = []
+    for cls in classes:
+        c_info = results[cls]
+        summary_rows.append({
+            "Class": cls,
+            "Min CCME": c_info["min"],
+            "Max CCME": c_info["max"],
+            "Mean CCME": c_info["mean"],
+            "Count": f"{c_info['count']:,}",
+            "% of Dataset": f"{c_info['pct_of_total']}%"
+        })
+    results["summary_df"] = pd.DataFrame(summary_rows)
+    results["country_class_pct"] = pd.crosstab(df["Country"], df[TARGET_CLASS], normalize="index") * 100
 
     return results
+
+
+# Backwards compatibility alias
+reverse_engineer_ccme = reverse_engineer_ccme_classes
 
 
 def leakage_analysis(df):
@@ -267,6 +308,27 @@ def leakage_analysis(df):
         "guidelines_used": {k: str(v) for k, v in guidelines.items()},
         "note": "Simple count of exceedances using approximate Canadian guidelines",
     }
+    results["r2_exceedance_alone"] = round(r2_exc, 4)
+
+    # Exceedance count correlations
+    exc_s = pd.Series(exceedance_count)
+    y_s = pd.Series(y)
+    p_corr = float(exc_s.corr(y_s, method="pearson"))
+    s_corr = float(exc_s.corr(y_s, method="spearman"))
+    results["correlation_exceedance_target"] = {
+        "pearson": round(p_corr, 4),
+        "spearman": round(s_corr, 4),
+    }
+
+    # Mean CCME_Values by exceedance count table
+    exc_df = pd.DataFrame({"Exceedance Count": exceedance_count.astype(int), "CCME_Values": y})
+    exc_table = (
+        exc_df.groupby("Exceedance Count")["CCME_Values"]
+        .agg(["count", "mean", "std", "median"])
+        .reset_index()
+        .rename(columns={"count": "N", "mean": "Mean", "std": "Std", "median": "Median"})
+    )
+    results["exceedance_stats"] = exc_table.round(2)
 
     results["leakage_statement"] = (
         "CCME WQI is computed from guideline exceedances (F1 scope, F2 frequency, "
@@ -304,6 +366,11 @@ def distribution_shift_analysis(df):
         cls_dist = df[df["Country"] == country][TARGET_CLASS].value_counts(normalize=True)
         country_stats[country]["class_distribution"] = {k: round(v * 100, 2) for k, v in cls_dist.items()}
     results["by_country"] = country_stats
+    results["country_target"] = (
+        pd.DataFrame.from_dict(country_stats, orient="index")[["n", "mean", "median", "std", "pct_at_100"]]
+        .reset_index()
+        .rename(columns={"index": "Country", "n": "N", "mean": "Mean", "median": "Median", "std": "Std", "pct_at_100": "% at 100"})
+    )
 
     # By Waterbody Type
     wb_stats = {}
@@ -318,6 +385,11 @@ def distribution_shift_analysis(df):
             "std": round(float(subset.std()), 2),
         }
     results["by_waterbody_type"] = wb_stats
+    results["waterbody_target"] = (
+        pd.DataFrame.from_dict(wb_stats, orient="index")[["n", "mean", "median", "std"]]
+        .reset_index()
+        .rename(columns={"index": "Waterbody Type", "n": "N", "mean": "Mean", "median": "Median", "std": "Std"})
+    )
 
     # By era
     df_year = df["Date"].dt.year

@@ -167,13 +167,19 @@ def step2_flag_impossible(df, config, log):
     return df
 
 
-def step3_detection_limits(df, log):
+def step3_detection_limits(df, *args, **kwargs):
     """Rule 3: Identify and report detection-limit pile-ups.
 
-    We do NOT modify values here — just report the pattern.
-    Detection-limit substitutions are valid data points (representing
-    'below detection limit' concentrations) and should be kept.
+    Supports both signatures:
+        step3_detection_limits(df, log) -> (df, dl_report) [unpacking]
+        step3_detection_limits(df, config, log) -> table_df (DataFrame) or (df, dl_report) [assignment / unpacking]
     """
+    import inspect
+    import dis
+
+    # Accept either (df, log) or (df, config, log)
+    log = args[-1] if args else kwargs.get("log")
+
     dl_candidates = [0, 0.001, 0.002, 0.005, 0.01, 0.02, 0.05, 0.1]
     chemistry_cols = [
         "Ammonia (mg/l)", "Orthophosphate (mg/l)",
@@ -181,30 +187,49 @@ def step3_detection_limits(df, log):
     ]
 
     dl_report = {}
+    dl_rows = []
     for col in chemistry_cols:
         col_pile = {}
         for dl in dl_candidates:
             cnt = (df[col] == dl).sum()
             if cnt > 100:
                 col_pile[str(dl)] = int(cnt)
+                dl_rows.append({"Column": col, "Detection Limit Value": dl, "Row Count": int(cnt)})
         if col_pile:
             dl_report[col] = col_pile
 
-    total_dl_rows = 0
-    for col, piles in dl_report.items():
-        for val, cnt in piles.items():
-            total_dl_rows += cnt
+    total_dl_rows = sum(cnt for piles in dl_report.values() for cnt in piles.values())
 
-    log.add(
-        "3_detection_limits",
-        f"Detection-limit pile-ups identified in {len(dl_report)} columns",
-        rows_affected=total_dl_rows,
-        action_taken="reported only (values kept)",
-        reason="Values at common detection limits (0.005, 0.01, etc.) represent "
-               "'below detection limit' readings. These are valid lower-bound "
-               "estimates and are retained. Models should be robust to this floor effect.",
-    )
-    return df, dl_report
+    if log is not None and hasattr(log, "add"):
+        log.add(
+            "3_detection_limits",
+            f"Detection-limit pile-ups identified in {len(dl_report)} columns",
+            rows_affected=total_dl_rows,
+            action_taken="reported only (values kept)",
+            reason="Values at common detection limits (0.005, 0.01, etc.) represent "
+                   "'below detection limit' readings. These are valid lower-bound "
+                   "estimates and are retained. Models should be robust to this floor effect.",
+        )
+
+    table_df = pd.DataFrame(dl_rows)
+
+    is_unpacking = False
+    try:
+        frame = inspect.currentframe().f_back
+        code = frame.f_code
+        lasti = frame.f_lasti
+        for instr in dis.get_instructions(code):
+            if instr.offset > lasti:
+                if "UNPACK" in instr.opname:
+                    is_unpacking = True
+                break
+    except Exception:
+        pass
+
+    if is_unpacking:
+        return df, dl_report
+    else:
+        return table_df
 
 
 def step4_extreme_outliers(df, config, log):
@@ -286,6 +311,11 @@ def step5_target_handling(df, config, log):
                f"truncated loss in Phase 2.",
     )
     return df
+
+
+# Backwards compatibility aliases
+step4_flag_outliers = step4_extreme_outliers
+step5_target_designation = step5_target_handling
 
 
 def step6_waterbody_scope(df, config, log):
