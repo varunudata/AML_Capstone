@@ -85,3 +85,4 @@ def test_step6_waterbody_scope_exclusion(sample_test_df):
     assert "Sewage" not in ambient_types
     assert len(ambient) == 3
     assert len(excluded) == 2
+

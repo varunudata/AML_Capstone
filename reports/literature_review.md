@@ -77,3 +77,4 @@ This capstone project directly resolves these three gaps by combining **zero-lea
 17. **Kaufman, S., Rosset, S., Perlich, C., & Stitelman, O. (2012).** "Leakage in data mining: Formulation, detection, and avoidance." *ACM Transactions on Knowledge Discovery from Data (TKDD)*, 6(4), 1–21.
 18. **Lundberg, S. M., Erion, G., Chen, H., DeGrave, A., Prutkin, J. M., Nair, B., ... & Lee, S. I. (2020).** "From local explanations to global understanding with explainable AI for trees." *Nature Machine Intelligence*, 2(1), 56–67.
 19. **Redfield, A. C. (1958).** "The biological control of chemical factors in the environment." *American Scientist*, 46(3), 205–221.
+

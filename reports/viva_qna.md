@@ -157,3 +157,4 @@ This allows exact closed-form calculation of optimal leaf weights $w_j^* = -\fra
 - Automated unit test suite via `pytest` enforcing data cleaning integrity and zero spatial overlap.
 - Pinned `requirements.txt` and `.gitignore` preventing data and large model weight pollution.
 - All numbers, tables, and figures 100% traceable to executable code and saved JSON artifacts.
+

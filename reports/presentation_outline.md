@@ -169,3 +169,4 @@
   * Evaluation of TabNet attention architectures for extreme-tail data-sparse catchments.
 * **Speaker Notes:**
   > "In conclusion, Phase 1 establishes a scientifically rigorous, fully reproducible, leakage-free benchmark for water quality index prediction. In Phase 2, we plan to extend this work into hybrid architectures, specifically Physics-Informed Neural Networks that enforce conservation of mass and oxygen re-aeration differential equations. Thank you, and I look forward to your questions."
+
