@@ -4,6 +4,8 @@
 # Data files (too large for git)
 data/raw/*.csv
 data/processed/*.parquet
+data/processed/*.npz
+data/processed/splits/*.npz
 
 # Python
 __pycache__/

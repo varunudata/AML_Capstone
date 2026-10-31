@@ -1,0 +1,154 @@
+{
+    "site_held_out": [
+        {
+            "split_name": "Train (Site Held Out)",
+            "rows": 1345895,
+            "pct_of_total": 67.68,
+            "unique_sites": 32602,
+            "target_mean": 89.304,
+            "target_std": 13.17,
+            "target_median": 92.693,
+            "target_iqr": 14.552,
+            "target_pct_100": 39.4,
+            "class_proportions": {
+                "Good": 42.53,
+                "Excellent": 39.4,
+                "Fair": 10.48,
+                "Marginal": 6.77,
+                "Poor": 0.82
+            }
+        },
+        {
+            "split_name": "Val (Site Held Out)",
+            "rows": 284667,
+            "pct_of_total": 14.31,
+            "unique_sites": 6986,
+            "target_mean": 88.976,
+            "target_std": 13.409,
+            "target_median": 92.337,
+            "target_iqr": 14.961,
+            "target_pct_100": 38.48,
+            "class_proportions": {
+                "Good": 43.03,
+                "Excellent": 38.48,
+                "Fair": 10.42,
+                "Marginal": 7.17,
+                "Poor": 0.9
+            }
+        },
+        {
+            "split_name": "Test (Site Held Out)",
+            "rows": 358067,
+            "pct_of_total": 18.01,
+            "unique_sites": 6987,
+            "target_mean": 91.326,
+            "target_std": 12.643,
+            "target_median": 100.0,
+            "target_iqr": 10.966,
+            "target_pct_100": 51.22,
+            "class_proportions": {
+                "Excellent": 51.22,
+                "Good": 34.15,
+                "Fair": 8.39,
+                "Marginal": 5.53,
+                "Poor": 0.71
+            }
+        }
+    ],
+    "temporal": [
+        {
+            "split_name": "Train (1990-2012)",
+            "rows": 1201693,
+            "pct_of_total": 60.43,
+            "unique_sites": 34957,
+            "target_mean": 87.773,
+            "target_std": 14.201,
+            "target_median": 91.598,
+            "target_iqr": 17.312,
+            "target_pct_100": 36.07,
+            "class_proportions": {
+                "Good": 41.97,
+                "Excellent": 36.07,
+                "Fair": 12.18,
+                "Marginal": 8.68,
+                "Poor": 1.1
+            }
+        },
+        {
+            "split_name": "Val (2013-2017)",
+            "rows": 441602,
+            "pct_of_total": 22.21,
+            "unique_sites": 20471,
+            "target_mean": 91.805,
+            "target_std": 11.133,
+            "target_median": 93.179,
+            "target_iqr": 10.366,
+            "target_pct_100": 46.47,
+            "class_proportions": {
+                "Excellent": 46.47,
+                "Good": 41.54,
+                "Fair": 7.66,
+                "Marginal": 3.87,
+                "Poor": 0.45
+            }
+        },
+        {
+            "split_name": "Test (2018-2023)",
+            "rows": 345334,
+            "pct_of_total": 17.37,
+            "unique_sites": 20487,
+            "target_mean": 93.258,
+            "target_std": 10.109,
+            "target_median": 100.0,
+            "target_iqr": 10.366,
+            "target_pct_100": 53.43,
+            "class_proportions": {
+                "Excellent": 53.43,
+                "Good": 37.5,
+                "Fair": 5.95,
+                "Marginal": 2.86,
+                "Poor": 0.26
+            }
+        }
+    ],
+    "loco": {
+        "Canada": {
+            "train_size": 1984988,
+            "test_size": 3641
+        },
+        "England": {
+            "train_size": 485997,
+            "test_size": 1502632
+        },
+        "China": {
+            "train_size": 1942652,
+            "test_size": 45977
+        },
+        "USA": {
+            "train_size": 1787240,
+            "test_size": 201389
+        },
+        "Ireland": {
+            "train_size": 1753639,
+            "test_size": 234990
+        }
+    },
+    "random_split_leakage": {
+        "overlapping_sites": 28368,
+        "overlap_pct": 91.23
+    },
+    "leakage_evaluation": {
+        "site_held_out": {
+            "r2": 0.4813,
+            "rmse": 9.1795,
+            "mae": 6.582
+        },
+        "random_split_not_for_reporting": {
+            "r2": 0.4759,
+            "rmse": 9.4286,
+            "mae": 6.949
+        },
+        "r2_inflation_delta": -0.0054,
+        "rmse_reduction_delta": -0.2491
+    }
+}
