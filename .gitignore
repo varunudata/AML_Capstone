@@ -22,3 +22,6 @@ Thumbs.db
 
 # Reports outputs (optional - uncomment to track)
 # reports/figures/
+
+# Local cache
+.cache/

@@ -1,0 +1,632 @@
+{
+  "target_distribution": {
+    "n_total": 1988629,
+    "n_capped_100": 823170,
+    "pct_capped_100": 41.39,
+    "mean": 89.6209,
+    "std": 13.1363,
+    "median": 92.8696,
+    "iqr": 14.0867,
+    "class_counts": {
+      "Excellent": 823170,
+      "Good": 817230,
+      "Fair": 200763,
+      "Marginal": 131327,
+      "Poor": 16139
+    },
+    "class_percentages": {
+      "Excellent": 41.39,
+      "Good": 41.1,
+      "Fair": 10.1,
+      "Marginal": 6.6,
+      "Poor": 0.81
+    }
+  },
+  "before_after_stats": {
+    "Ammonia (mg/l)": {
+      "raw_mean": 1.1585,
+      "clean_mean": 0.4582,
+      "raw_median": 0.055,
+      "clean_median": 0.039,
+      "raw_std": 5.6011,
+      "clean_std": 3.9995,
+      "raw_min": -0.005,
+      "clean_min": 0.0,
+      "raw_max": 200.0,
+      "clean_max": 200.0
+    },
+    "Biochemical Oxygen Demand (mg/l)": {
+      "raw_mean": 4.8511,
+      "clean_mean": 3.1492,
+      "raw_median": 2.7,
+      "clean_median": 2.1,
+      "raw_std": 16.2643,
+      "clean_std": 10.563,
+      "raw_min": 0.0,
+      "clean_min": 0.0,
+      "raw_max": 255.0,
+      "clean_max": 255.0
+    },
+    "Dissolved Oxygen (mg/l)": {
+      "raw_mean": 10.0066,
+      "clean_mean": 9.9432,
+      "raw_median": 10.2,
+      "clean_median": 10.2,
+      "raw_std": 1.8511,
+      "clean_std": 2.0906,
+      "raw_min": 0.0,
+      "clean_min": 0.01,
+      "raw_max": 20.0,
+      "clean_max": 20.0
+    },
+    "Orthophosphate (mg/l)": {
+      "raw_mean": 0.7093,
+      "clean_mean": 0.3069,
+      "raw_median": 0.106,
+      "clean_median": 0.068,
+      "raw_std": 2.0782,
+      "clean_std": 1.2719,
+      "raw_min": -0.003,
+      "clean_min": 0.0,
+      "raw_max": 98.0,
+      "clean_max": 90.0
+    },
+    "pH (ph units)": {
+      "raw_mean": 7.7357,
+      "clean_mean": 7.7695,
+      "raw_median": 7.78,
+      "clean_median": 7.8,
+      "raw_std": 0.4934,
+      "clean_std": 0.4553,
+      "raw_min": -1.0,
+      "clean_min": 0.0,
+      "raw_max": 29.6,
+      "clean_max": 14.0
+    },
+    "Temperature (cel)": {
+      "raw_mean": 11.8413,
+      "clean_mean": 11.5004,
+      "raw_median": 11.46,
+      "clean_median": 11.3,
+      "raw_std": 5.0557,
+      "clean_std": 4.4284,
+      "raw_min": -1.0,
+      "clean_min": -0.9,
+      "raw_max": 97.6,
+      "clean_max": 39.9
+    },
+    "Nitrogen (mg/l)": {
+      "raw_mean": 5.2083,
+      "clean_mean": 4.268,
+      "raw_median": 3.99,
+      "clean_median": 3.1,
+      "raw_std": 6.2037,
+      "clean_std": 4.5629,
+      "raw_min": 0.0,
+      "clean_min": 0.0,
+      "raw_max": 46.0,
+      "clean_max": 46.0
+    },
+    "Nitrate (mg/l)": {
+      "raw_mean": 4.7676,
+      "clean_mean": 4.1345,
+      "raw_median": 4.5,
+      "clean_median": 3.54,
+      "raw_std": 6.0809,
+      "clean_std": 4.6123,
+      "raw_min": 0.0,
+      "clean_min": 0.0,
+      "raw_max": 155.0,
+      "clean_max": 155.0
+    }
+  },
+  "correlation_analysis": {
+    "pearson_target_corr": {
+      "Ammonia (mg/l)": -0.287,
+      "Biochemical Oxygen Demand (mg/l)": -0.279,
+      "Dissolved Oxygen (mg/l)": -0.001,
+      "Orthophosphate (mg/l)": -0.501,
+      "pH (ph units)": -0.051,
+      "Temperature (cel)": -0.106,
+      "Nitrogen (mg/l)": -0.472,
+      "Nitrate (mg/l)": -0.367,
+      "CCME_Values": 1.0
+    },
+    "spearman_target_corr": {
+      "Ammonia (mg/l)": -0.558,
+      "Biochemical Oxygen Demand (mg/l)": -0.31,
+      "Dissolved Oxygen (mg/l)": 0.009,
+      "Orthophosphate (mg/l)": -0.913,
+      "pH (ph units)": -0.068,
+      "Temperature (cel)": -0.103,
+      "Nitrogen (mg/l)": -0.509,
+      "Nitrate (mg/l)": -0.508,
+      "CCME_Values": 1.0
+    },
+    "nitrogen_nitrate_pearson": 0.765,
+    "nitrogen_nitrate_spearman": 0.907,
+    "vif": {
+      "Ammonia (mg/l)": 1.1185,
+      "Biochemical Oxygen Demand (mg/l)": 1.1123,
+      "Dissolved Oxygen (mg/l)": 1.1239,
+      "Orthophosphate (mg/l)": 1.1082,
+      "pH (ph units)": 1.0449,
+      "Temperature (cel)": 1.1291,
+      "Nitrogen (mg/l)": 2.5366,
+      "Nitrate (mg/l)": 2.4238
+    }
+  },
+  "feature_target_relationships": {
+    "Ammonia (mg/l)": {
+      "min_mean_target": 54.86,
+      "max_mean_target": 91.78
+    },
+    "Biochemical Oxygen Demand (mg/l)": {
+      "min_mean_target": 62.43,
+      "max_mean_target": 92.48
+    },
+    "Dissolved Oxygen (mg/l)": {
+      "min_mean_target": 85.92,
+      "max_mean_target": 95.99
+    },
+    "Orthophosphate (mg/l)": {
+      "min_mean_target": 46.56,
+      "max_mean_target": 94.99
+    },
+    "pH (ph units)": {
+      "min_mean_target": 83.91,
+      "max_mean_target": 95.43
+    },
+    "Temperature (cel)": {
+      "min_mean_target": 84.8,
+      "max_mean_target": 95.21
+    },
+    "Nitrogen (mg/l)": {
+      "min_mean_target": 65.26,
+      "max_mean_target": 96.41
+    },
+    "Nitrate (mg/l)": {
+      "min_mean_target": 72.43,
+      "max_mean_target": 96.73
+    }
+  },
+  "country_target_stats": {
+    "Canada": {
+      "count": 3641,
+      "mean": 89.95,
+      "std": 12.5,
+      "median": 93.12
+    },
+    "China": {
+      "count": 45977,
+      "mean": 96.51,
+      "std": 4.62,
+      "median": 100.0
+    },
+    "England": {
+      "count": 1502632,
+      "mean": 86.84,
+      "std": 13.69,
+      "median": 89.63
+    },
+    "Ireland": {
+      "count": 234990,
+      "mean": 98.11,
+      "std": 6.41,
+      "median": 100.0
+    },
+    "USA": {
+      "count": 201389,
+      "mean": 98.92,
+      "std": 3.24,
+      "median": 100.0
+    }
+  },
+  "waterbody_target_stats": {
+    "Bay": {
+      "count": 45977,
+      "mean": 96.51,
+      "std": 4.62,
+      "median": 100.0
+    },
+    "Canal": {
+      "count": 28569,
+      "mean": 86.53,
+      "std": 13.48,
+      "median": 89.63
+    },
+    "Coastal": {
+      "count": 2818,
+      "mean": 93.7,
+      "std": 16.15,
+      "median": 100.0
+    },
+    "Drainage": {
+      "count": 10190,
+      "mean": 73.91,
+      "std": 16.82,
+      "median": 74.34
+    },
+    "Effluent": {
+      "count": 0,
+      "mean": NaN,
+      "std": NaN,
+      "median": NaN
+    },
+    "Estuarine": {
+      "count": 49239,
+      "mean": 85.1,
+      "std": 12.61,
+      "median": 89.63
+    },
+    "Lake": {
+      "count": 144383,
+      "mean": 96.95,
+      "std": 7.94,
+      "median": 100.0
+    },
+    "Marine": {
+      "count": 22877,
+      "mean": 97.06,
+      "std": 4.3,
+      "median": 100.0
+    },
+    "River": {
+      "count": 1648395,
+      "mean": 89.05,
+      "std": 13.27,
+      "median": 92.49
+    },
+    "Sea Water": {
+      "count": 31928,
+      "mean": 84.34,
+      "std": 15.81,
+      "median": 89.63
+    },
+    "Sewage": {
+      "count": 0,
+      "mean": NaN,
+      "std": NaN,
+      "median": NaN
+    },
+    "Transitional": {
+      "count": 4253,
+      "mean": 93.79,
+      "std": 15.59,
+      "median": 100.0
+    }
+  },
+  "yearly_target_stats": {
+    "1990": {
+      "count": 2920,
+      "mean": 98.68,
+      "std": 4.79
+    },
+    "1991": {
+      "count": 2365,
+      "mean": 99.11,
+      "std": 3.65
+    },
+    "1992": {
+      "count": 1459,
+      "mean": 98.76,
+      "std": 4.6
+    },
+    "1993": {
+      "count": 2623,
+      "mean": 99.2,
+      "std": 3.16
+    },
+    "1994": {
+      "count": 3069,
+      "mean": 99.21,
+      "std": 2.79
+    },
+    "1995": {
+      "count": 3578,
+      "mean": 99.21,
+      "std": 2.92
+    },
+    "1996": {
+      "count": 5067,
+      "mean": 99.18,
+      "std": 3.09
+    },
+    "1997": {
+      "count": 4417,
+      "mean": 99.29,
+      "std": 2.44
+    },
+    "1998": {
+      "count": 5078,
+      "mean": 99.32,
+      "std": 2.97
+    },
+    "1999": {
+      "count": 5804,
+      "mean": 99.19,
+      "std": 3.48
+    },
+    "2000": {
+      "count": 96976,
+      "mean": 82.95,
+      "std": 16.38
+    },
+    "2001": {
+      "count": 82855,
+      "mean": 84.2,
+      "std": 15.47
+    },
+    "2002": {
+      "count": 93900,
+      "mean": 84.9,
+      "std": 15.07
+    },
+    "2003": {
+      "count": 91742,
+      "mean": 84.66,
+      "std": 15.7
+    },
+    "2004": {
+      "count": 89612,
+      "mean": 85.82,
+      "std": 14.74
+    },
+    "2005": {
+      "count": 89148,
+      "mean": 85.83,
+      "std": 15.07
+    },
+    "2006": {
+      "count": 89127,
+      "mean": 86.43,
+      "std": 14.79
+    },
+    "2007": {
+      "count": 92757,
+      "mean": 89.26,
+      "std": 13.26
+    },
+    "2008": {
+      "count": 90880,
+      "mean": 90.47,
+      "std": 12.5
+    },
+    "2009": {
+      "count": 84790,
+      "mean": 90.5,
+      "std": 12.4
+    },
+    "2010": {
+      "count": 79641,
+      "mean": 91.04,
+      "std": 11.41
+    },
+    "2011": {
+      "count": 84624,
+      "mean": 89.94,
+      "std": 12.39
+    },
+    "2012": {
+      "count": 99261,
+      "mean": 90.95,
+      "std": 10.89
+    },
+    "2013": {
+      "count": 110167,
+      "mean": 90.79,
+      "std": 11.59
+    },
+    "2014": {
+      "count": 93464,
+      "mean": 91.82,
+      "std": 11.1
+    },
+    "2015": {
+      "count": 87254,
+      "mean": 91.8,
+      "std": 11.32
+    },
+    "2016": {
+      "count": 80779,
+      "mean": 92.29,
+      "std": 10.68
+    },
+    "2017": {
+      "count": 69938,
+      "mean": 92.81,
+      "std": 10.57
+    },
+    "2018": {
+      "count": 60389,
+      "mean": 93.07,
+      "std": 10.88
+    },
+    "2019": {
+      "count": 74282,
+      "mean": 92.2,
+      "std": 10.75
+    },
+    "2020": {
+      "count": 38793,
+      "mean": 94.97,
+      "std": 8.25
+    },
+    "2021": {
+      "count": 61041,
+      "mean": 93.44,
+      "std": 9.9
+    },
+    "2022": {
+      "count": 64915,
+      "mean": 93.68,
+      "std": 9.84
+    },
+    "2023": {
+      "count": 45914,
+      "mean": 92.92,
+      "std": 9.83
+    }
+  },
+  "monthly_target_stats": {
+    "1": {
+      "count": 160809,
+      "mean": 90.52,
+      "std": 11.91
+    },
+    "2": {
+      "count": 166838,
+      "mean": 90.98,
+      "std": 11.83
+    },
+    "3": {
+      "count": 169545,
+      "mean": 90.99,
+      "std": 12.34
+    },
+    "4": {
+      "count": 158207,
+      "mean": 90.94,
+      "std": 12.74
+    },
+    "5": {
+      "count": 166252,
+      "mean": 89.74,
+      "std": 13.37
+    },
+    "6": {
+      "count": 171149,
+      "mean": 88.78,
+      "std": 13.83
+    },
+    "7": {
+      "count": 178894,
+      "mean": 88.1,
+      "std": 14.32
+    },
+    "8": {
+      "count": 171113,
+      "mean": 88.12,
+      "std": 14.23
+    },
+    "9": {
+      "count": 167789,
+      "mean": 88.12,
+      "std": 14.3
+    },
+    "10": {
+      "count": 178447,
+      "mean": 89.09,
+      "std": 13.28
+    },
+    "11": {
+      "count": 181298,
+      "mean": 90.02,
+      "std": 12.18
+    },
+    "12": {
+      "count": 118288,
+      "mean": 90.59,
+      "std": 11.81
+    }
+  },
+  "invalid_values_summary": {
+    "Exact Duplicates": {
+      "count": 9971,
+      "action": "Dropped"
+    },
+    "Non-Ambient: Effluent": {
+      "count": 601550,
+      "action": "Segregated"
+    },
+    "Non-Ambient: Sewage": {
+      "count": 23777,
+      "action": "Segregated"
+    },
+    "Pre-1990 Historical Rows": {
+      "count": 204112,
+      "action": "Dropped"
+    },
+    "Extreme Temperature (>40\u00b0C)": {
+      "count": 7284,
+      "action": "Set to NaN"
+    },
+    "Severe Outlier: BOD >100": {
+      "count": 21242,
+      "action": "Flagged Only"
+    },
+    "Severe Outlier: Ammonia >50": {
+      "count": 6658,
+      "action": "Flagged Only"
+    },
+    "Severe Outlier: Nitrate >100": {
+      "count": 1009,
+      "action": "Flagged Only"
+    },
+    "Severe Outlier: Orthophosphate >50": {
+      "count": 302,
+      "action": "Flagged Only"
+    },
+    "Impossible pH (<0 or >14)": {
+      "count": 505,
+      "action": "Set to NaN"
+    },
+    "Anoxic / Zero DO (<0.01)": {
+      "count": 204,
+      "action": "Set to NaN"
+    },
+    "Negative Concentrations": {
+      "count": 14,
+      "action": "Set to NaN"
+    }
+  },
+  "site_analysis": {
+    "total_unique_sites": 46575,
+    "single_year_sites": 16859,
+    "single_year_pct": 36.2,
+    "multi_year_sites": 29716,
+    "multi_year_pct": 63.8,
+    "sites_ge_5_years": 19002,
+    "sites_ge_5_pct": 40.8,
+    "sites_ge_10_years": 12602,
+    "sites_ge_10_pct": 27.06,
+    "site_obs_percentiles": {
+      "p10": 1.0,
+      "p25": 1.0,
+      "p50_median": 8.0,
+      "p75": 49.0,
+      "p90": 121.0,
+      "p95": 165.0,
+      "p99": 256.26000000000204,
+      "max": 49149
+    }
+  },
+  "shortcut_analysis": {
+    "sample_size": 500000,
+    "dummy_mean": {
+      "rmse": 13.1585,
+      "mae": 9.6606,
+      "r2": 0.0
+    },
+    "country_alone": {
+      "rmse": 12.2008,
+      "mae": 8.568,
+      "r2": 0.1403
+    },
+    "waterbody_alone": {
+      "rmse": 12.8386,
+      "mae": 9.397,
+      "r2": 0.048
+    },
+    "country_and_waterbody": {
+      "rmse": 12.1479,
+      "mae": 8.5089,
+      "r2": 0.1477
+    },
+    "country_waterbody_month": {
+      "rmse": 12.0859,
+      "mae": 8.4558,
+      "r2": 0.1564
+    }
+  }
+}
