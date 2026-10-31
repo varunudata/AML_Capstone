@@ -1,0 +1,366 @@
+{
+  "cleaning_log": {
+    "initial_rows": 2827977,
+    "final_rows": 1988629,
+    "total_dropped": 839348,
+    "pct_dropped": 29.68,
+    "steps": [
+      {
+        "rule": "1_duplicates",
+        "description": "Drop exact duplicate rows",
+        "rows_affected": 9971,
+        "pct_of_original": 0.3526,
+        "action": "dropped",
+        "reason": "Exact duplicates add no information and inflate apparent sample size",
+        "rows_before": 2827977,
+        "rows_after": 2818006
+      },
+      {
+        "rule": "2_impossible_Ammonia (mg/l)_below",
+        "description": "Ammonia (mg/l) < 0 \u2192 NaN",
+        "rows_affected": 2,
+        "pct_of_original": 0.0001,
+        "action": "flagged + set to NaN",
+        "reason": "Negative ammonia is physically impossible; likely below-detection-limit code or instrument artefact",
+        "rows_before": 2818006,
+        "rows_after": null
+      },
+      {
+        "rule": "2_impossible_Biochemical Oxygen Demand (mg/l)_below",
+        "description": "Biochemical Oxygen Demand (mg/l) < 0 \u2192 NaN",
+        "rows_affected": 2,
+        "pct_of_original": 0.0001,
+        "action": "flagged + set to NaN",
+        "reason": "Negative BOD is physically impossible; likely instrument artefact",
+        "rows_before": 2818006,
+        "rows_after": null
+      },
+      {
+        "rule": "2_impossible_Dissolved Oxygen (mg/l)_below",
+        "description": "Dissolved Oxygen (mg/l) < 0.01 \u2192 NaN",
+        "rows_affected": 204,
+        "pct_of_original": 0.0072,
+        "action": "flagged + set to NaN",
+        "reason": "DO = 0 is implausible for water samples (instrument error or anoxic artefact)",
+        "rows_before": 2818006,
+        "rows_after": null
+      },
+      {
+        "rule": "2_impossible_Orthophosphate (mg/l)_below",
+        "description": "Orthophosphate (mg/l) < 0 \u2192 NaN",
+        "rows_affected": 10,
+        "pct_of_original": 0.0004,
+        "action": "flagged + set to NaN",
+        "reason": "Negative orthophosphate is physically impossible",
+        "rows_before": 2818006,
+        "rows_after": null
+      },
+      {
+        "rule": "2_impossible_pH (ph units)_below",
+        "description": "pH (ph units) < 0 \u2192 NaN",
+        "rows_affected": 1,
+        "pct_of_original": 0.0,
+        "action": "flagged + set to NaN",
+        "reason": "pH < 0 is not possible for aqueous solutions",
+        "rows_before": 2818006,
+        "rows_after": null
+      },
+      {
+        "rule": "2_impossible_pH (ph units)_above",
+        "description": "pH (ph units) > 14 \u2192 NaN",
+        "rows_affected": 504,
+        "pct_of_original": 0.0178,
+        "action": "flagged + set to NaN",
+        "reason": "pH > 14 is not possible for aqueous solutions",
+        "rows_before": 2818006,
+        "rows_after": null
+      },
+      {
+        "rule": "2_impossible_Temperature (cel)_below",
+        "description": "Temperature (cel) < -2 \u2192 NaN",
+        "rows_affected": 1,
+        "pct_of_original": 0.0,
+        "action": "flagged + set to NaN",
+        "reason": "Water temperature below -2\u00b0C is implausible (even salt water)",
+        "rows_before": 2818006,
+        "rows_after": null
+      },
+      {
+        "rule": "2_impossible_Temperature (cel)_above",
+        "description": "Temperature (cel) > 40 \u2192 NaN",
+        "rows_affected": 7284,
+        "pct_of_original": 0.2576,
+        "action": "flagged + set to NaN",
+        "reason": "Water temperature above 40\u00b0C is implausible for environmental monitoring (likely sensor error or unit confusion)",
+        "rows_before": 2818006,
+        "rows_after": null
+      },
+      {
+        "rule": "3_detection_limits",
+        "description": "Detection-limit pile-ups identified in 4 columns",
+        "rows_affected": 359419,
+        "pct_of_original": 12.7094,
+        "action": "reported only (values kept)",
+        "reason": "Values at common detection limits (0.005, 0.01, etc.) represent 'below detection limit' readings. These are valid lower-bound estimates and are retained. Models should be robust to this floor effect.",
+        "rows_before": 2818006,
+        "rows_after": null
+      },
+      {
+        "rule": "4_outlier_Ammonia (mg/l)",
+        "description": "Ammonia (mg/l) > 50 flagged as extreme",
+        "rows_affected": 6658,
+        "pct_of_original": 0.2354,
+        "action": "flag_only",
+        "reason": "Values above 50 are plausible for point-source discharge or heavily polluted sites, but are extreme for ambient water. Flagged for sensitivity testing; not deleted.",
+        "rows_before": 2818006,
+        "rows_after": null
+      },
+      {
+        "rule": "4_outlier_Biochemical Oxygen Demand (mg/l)",
+        "description": "Biochemical Oxygen Demand (mg/l) > 100 flagged as extreme",
+        "rows_affected": 21242,
+        "pct_of_original": 0.7511,
+        "action": "flag_only",
+        "reason": "Values above 100 are plausible for point-source discharge or heavily polluted sites, but are extreme for ambient water. Flagged for sensitivity testing; not deleted.",
+        "rows_before": 2818006,
+        "rows_after": null
+      },
+      {
+        "rule": "4_outlier_Orthophosphate (mg/l)",
+        "description": "Orthophosphate (mg/l) > 50 flagged as extreme",
+        "rows_affected": 302,
+        "pct_of_original": 0.0107,
+        "action": "flag_only",
+        "reason": "Values above 50 are plausible for point-source discharge or heavily polluted sites, but are extreme for ambient water. Flagged for sensitivity testing; not deleted.",
+        "rows_before": 2818006,
+        "rows_after": null
+      },
+      {
+        "rule": "4_outlier_Nitrate (mg/l)",
+        "description": "Nitrate (mg/l) > 100 flagged as extreme",
+        "rows_affected": 1009,
+        "pct_of_original": 0.0357,
+        "action": "flag_only",
+        "reason": "Values above 100 are plausible for point-source discharge or heavily polluted sites, but are extreme for ambient water. Flagged for sensitivity testing; not deleted.",
+        "rows_before": 2818006,
+        "rows_after": null
+      },
+      {
+        "rule": "5_target",
+        "description": "Target = CCME_Values (continuous). CCME_WQI is derived, not a target.",
+        "rows_affected": 0,
+        "pct_of_original": 0.0,
+        "action": "documented",
+        "reason": "CCME_Values is right-censored at 100.0 (1,012,105 rows = 35.92%). Classification into 5 classes is a secondary view derived from regression predictions. The censoring means standard regression metrics (MSE, MAE) may underestimate error for high-quality sites. Consider Tobit regression or truncated loss in Phase 2.",
+        "rows_before": 2818006,
+        "rows_after": null
+      },
+      {
+        "rule": "6_waterbody_scope",
+        "description": "Exclude ['Effluent', 'Sewage'] \u2014 not ambient water",
+        "rows_affected": 625265,
+        "pct_of_original": 22.11,
+        "action": "separated (excluded to separate file)",
+        "reason": "Effluent (601,550 rows) and Sewage (23,777 rows) are point-source discharges, not ambient water quality. They follow different regulatory standards and have drastically different chemistry distributions (mean CCME 66.6 and 53.7 vs 90.4 for ambient). Including them conflates water quality assessment with wastewater treatment performance.",
+        "rows_before": 2818006,
+        "rows_after": 2192741
+      },
+      {
+        "rule": "7_date_filter",
+        "description": "Drop rows with year < 1990",
+        "rows_affected": 204112,
+        "pct_of_original": 7.2176,
+        "action": "dropped",
+        "reason": "Years 1940-1989 contain only ~206k sparse rows across few sites (mostly USA), with very different monitoring regimes. 1990+ provides 97.7% of data.",
+        "rows_before": 2192741,
+        "rows_after": 1988629
+      },
+      {
+        "rule": "8_metadata_roles",
+        "description": "Metadata columns: ['Country', 'Area', 'Waterbody Type', 'Date'] \u2014 NOT used as model features",
+        "rows_affected": 0,
+        "pct_of_original": 0.0,
+        "action": "documented",
+        "reason": "Country is a distribution-shift driver (would be a shortcut feature). Area is used for group-aware train/val/test splitting (no site leaks). Date provides temporal structure. These are tested as ablations only.",
+        "rows_before": 1988629,
+        "rows_after": null
+      }
+    ]
+  },
+  "detection_limits": {
+    "Ammonia (mg/l)": {
+      "0": 1389,
+      "0.001": 1362,
+      "0.002": 2324,
+      "0.005": 1837,
+      "0.01": 10316,
+      "0.02": 12821,
+      "0.05": 14449,
+      "0.1": 7675
+    },
+    "Orthophosphate (mg/l)": {
+      "0": 690,
+      "0.001": 6276,
+      "0.002": 2318,
+      "0.005": 5661,
+      "0.01": 71766,
+      "0.02": 172530,
+      "0.05": 14537,
+      "0.1": 8763
+    },
+    "Nitrogen (mg/l)": {
+      "0": 131,
+      "0.001": 147,
+      "0.002": 1283,
+      "0.005": 1634,
+      "0.01": 1857,
+      "0.02": 1024,
+      "0.05": 615,
+      "0.1": 3650
+    },
+    "Nitrate (mg/l)": {
+      "0": 1175,
+      "0.001": 320,
+      "0.002": 940,
+      "0.005": 908,
+      "0.01": 2303,
+      "0.02": 1897,
+      "0.05": 866,
+      "0.1": 5955
+    }
+  },
+  "outlier_summary": {
+    "Ammonia (mg/l)": {
+      "threshold": 50,
+      "n_flagged": 6658,
+      "pct": 0.236
+    },
+    "Biochemical Oxygen Demand (mg/l)": {
+      "threshold": 100,
+      "n_flagged": 21242,
+      "pct": 0.754
+    },
+    "Orthophosphate (mg/l)": {
+      "threshold": 50,
+      "n_flagged": 302,
+      "pct": 0.011
+    },
+    "Nitrate (mg/l)": {
+      "threshold": 100,
+      "n_flagged": 1009,
+      "pct": 0.036
+    }
+  },
+  "iqr_report": {
+    "Ammonia (mg/l)": {
+      "Q1": 0.03,
+      "Q3": 0.32,
+      "IQR": 0.29,
+      "lower_fence_3IQR": -0.84,
+      "upper_fence_3IQR": 1.19,
+      "n_below_fence": 0,
+      "n_above_fence": 322561
+    },
+    "Biochemical Oxygen Demand (mg/l)": {
+      "Q1": 1.6,
+      "Q3": 2.85,
+      "IQR": 1.25,
+      "lower_fence_3IQR": -2.15,
+      "upper_fence_3IQR": 6.6,
+      "n_below_fence": 0,
+      "n_above_fence": 291485
+    },
+    "Dissolved Oxygen (mg/l)": {
+      "Q1": 9.86,
+      "Q3": 11.0,
+      "IQR": 1.14,
+      "lower_fence_3IQR": 6.44,
+      "upper_fence_3IQR": 14.42,
+      "n_below_fence": 169881,
+      "n_above_fence": 12634
+    },
+    "Orthophosphate (mg/l)": {
+      "Q1": 0.04,
+      "Q3": 0.229,
+      "IQR": 0.189,
+      "lower_fence_3IQR": -0.527,
+      "upper_fence_3IQR": 0.796,
+      "n_below_fence": 0,
+      "n_above_fence": 391075
+    },
+    "pH (ph units)": {
+      "Q1": 7.55,
+      "Q3": 8.0,
+      "IQR": 0.45,
+      "lower_fence_3IQR": 6.2,
+      "upper_fence_3IQR": 9.35,
+      "n_below_fence": 22304,
+      "n_above_fence": 4206
+    },
+    "Temperature (cel)": {
+      "Q1": 8.91,
+      "Q3": 14.2,
+      "IQR": 5.29,
+      "lower_fence_3IQR": -6.96,
+      "upper_fence_3IQR": 30.07,
+      "n_below_fence": 0,
+      "n_above_fence": 1631
+    },
+    "Nitrogen (mg/l)": {
+      "Q1": 0.8,
+      "Q3": 6.35,
+      "IQR": 5.55,
+      "lower_fence_3IQR": -15.85,
+      "upper_fence_3IQR": 23.0,
+      "n_below_fence": 0,
+      "n_above_fence": 80622
+    },
+    "Nitrate (mg/l)": {
+      "Q1": 1.2,
+      "Q3": 4.97,
+      "IQR": 3.77,
+      "lower_fence_3IQR": -10.11,
+      "upper_fence_3IQR": 16.28,
+      "n_below_fence": 0,
+      "n_above_fence": 112819
+    }
+  },
+  "nan_summary": {
+    "Ammonia (mg/l)": {
+      "n_nan": 2,
+      "pct_nan": 0.0
+    },
+    "Biochemical Oxygen Demand (mg/l)": {
+      "n_nan": 2,
+      "pct_nan": 0.0
+    },
+    "Dissolved Oxygen (mg/l)": {
+      "n_nan": 187,
+      "pct_nan": 0.009
+    },
+    "Orthophosphate (mg/l)": {
+      "n_nan": 10,
+      "pct_nan": 0.001
+    },
+    "pH (ph units)": {
+      "n_nan": 504,
+      "pct_nan": 0.025
+    },
+    "Temperature (cel)": {
+      "n_nan": 224,
+      "pct_nan": 0.011
+    },
+    "Nitrogen (mg/l)": {
+      "n_nan": 0,
+      "pct_nan": 0.0
+    },
+    "Nitrate (mg/l)": {
+      "n_nan": 0,
+      "pct_nan": 0.0
+    }
+  },
+  "final_shape": [
+    1988629,
+    30
+  ]
+}
