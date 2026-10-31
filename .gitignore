@@ -25,5 +25,8 @@ Thumbs.db
 # Reports outputs (optional - uncomment to track)
 # reports/figures/
 
+# Models (weights and joblib artifacts)
+models/*.joblib
+
 # Local cache
 .cache/

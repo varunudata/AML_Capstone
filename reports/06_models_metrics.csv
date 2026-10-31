@@ -1,0 +1,8 @@
+Model,Val R²,Val RMSE,Val MAE,Test R²,Test RMSE,Test MAE,Test RMSE 95% CI
+1. Train-Mean Baseline,-0.0005,13.4321,9.7768,-0.0235,12.8823,9.9822,"[12.7824, 13.1143]"
+2. Per-Waterbody Mean Baseline,0.0111,13.354,9.9007,0.0929,12.1274,9.0341,"[12.0259, 12.3658]"
+3. Ridge Regression (Linear),0.9238,3.7072,2.4572,0.9177,3.6525,2.624,"[3.551, 3.7579]"
+4. Random Forest Regressor,0.9991,0.4099,0.1278,0.9993,0.331,0.0955,"[0.345, 0.4217]"
+"5. XGBoost (Tuned, Unconstrained)",0.9988,0.4659,0.1303,0.9992,0.3496,0.1013,"[0.3514, 0.4107]"
+"6. XGBoost (Boundary-Clipped [0, 100])",0.9988,0.4659,0.1303,0.9992,0.3496,0.1012,"[0.3514, 0.4107]"
+7. Two-Stage Hurdle Model (Classifier + Regressor),0.999,0.4203,0.0926,0.9995,0.2834,0.0704,"[0.2853, 0.3421]"

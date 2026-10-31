@@ -1,0 +1,335 @@
+{
+    "benchmark_comparison": [
+        {
+            "Model": "1. Train-Mean Baseline",
+            "Val R\u00b2": -0.0005,
+            "Val RMSE": 13.4321,
+            "Val MAE": 9.7768,
+            "Test R\u00b2": -0.0235,
+            "Test RMSE": 12.8823,
+            "Test MAE": 9.9822,
+            "Test RMSE 95% CI": "[12.7824, 13.1143]"
+        },
+        {
+            "Model": "2. Per-Waterbody Mean Baseline",
+            "Val R\u00b2": 0.0111,
+            "Val RMSE": 13.354,
+            "Val MAE": 9.9007,
+            "Test R\u00b2": 0.0929,
+            "Test RMSE": 12.1274,
+            "Test MAE": 9.0341,
+            "Test RMSE 95% CI": "[12.0259, 12.3658]"
+        },
+        {
+            "Model": "3. Ridge Regression (Linear)",
+            "Val R\u00b2": 0.9238,
+            "Val RMSE": 3.7072,
+            "Val MAE": 2.4572,
+            "Test R\u00b2": 0.9177,
+            "Test RMSE": 3.6525,
+            "Test MAE": 2.624,
+            "Test RMSE 95% CI": "[3.551, 3.7579]"
+        },
+        {
+            "Model": "4. Random Forest Regressor",
+            "Val R\u00b2": 0.9991,
+            "Val RMSE": 0.4099,
+            "Val MAE": 0.1278,
+            "Test R\u00b2": 0.9993,
+            "Test RMSE": 0.331,
+            "Test MAE": 0.0955,
+            "Test RMSE 95% CI": "[0.345, 0.4217]"
+        },
+        {
+            "Model": "5. XGBoost (Tuned, Unconstrained)",
+            "Val R\u00b2": 0.9988,
+            "Val RMSE": 0.4659,
+            "Val MAE": 0.1303,
+            "Test R\u00b2": 0.9992,
+            "Test RMSE": 0.3496,
+            "Test MAE": 0.1013,
+            "Test RMSE 95% CI": "[0.3514, 0.4107]"
+        },
+        {
+            "Model": "6. XGBoost (Boundary-Clipped [0, 100])",
+            "Val R\u00b2": 0.9988,
+            "Val RMSE": 0.4659,
+            "Val MAE": 0.1303,
+            "Test R\u00b2": 0.9992,
+            "Test RMSE": 0.3496,
+            "Test MAE": 0.1012,
+            "Test RMSE 95% CI": "[0.3514, 0.4107]"
+        },
+        {
+            "Model": "7. Two-Stage Hurdle Model (Classifier + Regressor)",
+            "Val R\u00b2": 0.999,
+            "Val RMSE": 0.4203,
+            "Val MAE": 0.0926,
+            "Test R\u00b2": 0.9995,
+            "Test RMSE": 0.2834,
+            "Test MAE": 0.0704,
+            "Test RMSE 95% CI": "[0.2853, 0.3421]"
+        }
+    ],
+    "best_optuna_params": {
+        "max_depth": 4,
+        "learning_rate": 0.16231191351941002,
+        "subsample": 0.7035119926400067,
+        "colsample_bytree": 0.8650089137415928,
+        "min_child_weight": 4,
+        "reg_alpha": 0.12030178871154672,
+        "reg_lambda": 0.1537592023548176
+    },
+    "country_error_breakdown": [
+        {
+            "Country": "USA",
+            "Samples": 13216,
+            "R\u00b2": 0.9922,
+            "RMSE": 0.213,
+            "MAE": 0.0164
+        },
+        {
+            "Country": "Ireland",
+            "Samples": 5117,
+            "R\u00b2": 0.9995,
+            "RMSE": 0.1731,
+            "MAE": 0.0316
+        },
+        {
+            "Country": "England",
+            "Samples": 31597,
+            "R\u00b2": 0.9991,
+            "RMSE": 0.4104,
+            "MAE": 0.1477
+        },
+        {
+            "Country": "Canada",
+            "Samples": 70,
+            "R\u00b2": 0.9967,
+            "RMSE": 0.7016,
+            "MAE": 0.2667
+        }
+    ],
+    "waterbody_error_breakdown": [
+        {
+            "Waterbody Type": "Lake",
+            "Samples": 11441,
+            "R\u00b2": 0.9995,
+            "RMSE": 0.1022,
+            "MAE": 0.0138
+        },
+        {
+            "Waterbody Type": "River",
+            "Samples": 35998,
+            "R\u00b2": 0.9992,
+            "RMSE": 0.3866,
+            "MAE": 0.1237
+        },
+        {
+            "Waterbody Type": "Transitional",
+            "Samples": 61,
+            "R\u00b2": 0.9992,
+            "RMSE": 0.2367,
+            "MAE": 0.071
+        },
+        {
+            "Waterbody Type": "Canal",
+            "Samples": 598,
+            "R\u00b2": 0.9989,
+            "RMSE": 0.4801,
+            "MAE": 0.1724
+        },
+        {
+            "Waterbody Type": "Estuarine",
+            "Samples": 921,
+            "R\u00b2": 0.9995,
+            "RMSE": 0.2869,
+            "MAE": 0.1152
+        },
+        {
+            "Waterbody Type": "Sea Water",
+            "Samples": 735,
+            "R\u00b2": 0.9988,
+            "RMSE": 0.5277,
+            "MAE": 0.1829
+        },
+        {
+            "Waterbody Type": "Drainage",
+            "Samples": 197,
+            "R\u00b2": 0.9972,
+            "RMSE": 0.9727,
+            "MAE": 0.5198
+        },
+        {
+            "Waterbody Type": "Coastal",
+            "Samples": 43,
+            "R\u00b2": 0.9999,
+            "RMSE": 0.0971,
+            "MAE": 0.0236
+        }
+    ],
+    "target_range_error_breakdown": [
+        {
+            "Target Range": "Poor (<45)",
+            "Samples": 384,
+            "RMSE": 1.0347,
+            "MAE": 0.6393
+        },
+        {
+            "Target Range": "Marginal [45, 65)",
+            "Samples": 2769,
+            "RMSE": 0.9347,
+            "MAE": 0.5607
+        },
+        {
+            "Target Range": "Fair [65, 80)",
+            "Samples": 4271,
+            "RMSE": 0.602,
+            "MAE": 0.328
+        },
+        {
+            "Target Range": "Good [80, 95)",
+            "Samples": 16888,
+            "RMSE": 0.2882,
+            "MAE": 0.1007
+        },
+        {
+            "Target Range": "Excellent [95, 100]",
+            "Samples": 25688,
+            "RMSE": 0.1131,
+            "MAE": 0.0064
+        }
+    ],
+    "secondary_classification": {
+        "macro_f1": 0.9661,
+        "per_class": {
+            "Excellent": {
+                "precision": 0.9995,
+                "recall": 0.9998,
+                "f1-score": 0.9996,
+                "support": 25688.0
+            },
+            "Fair": {
+                "precision": 0.9873,
+                "recall": 0.9501,
+                "f1-score": 0.9684,
+                "support": 4271.0
+            },
+            "Good": {
+                "precision": 0.9918,
+                "recall": 0.9976,
+                "f1-score": 0.9947,
+                "support": 16888.0
+            },
+            "Marginal": {
+                "precision": 0.9585,
+                "recall": 0.9769,
+                "f1-score": 0.9676,
+                "support": 2769.0
+            },
+            "Poor": {
+                "precision": 0.8966,
+                "recall": 0.9036,
+                "f1-score": 0.9001,
+                "support": 384.0
+            },
+            "macro avg": {
+                "precision": 0.9668,
+                "recall": 0.9656,
+                "f1-score": 0.9661,
+                "support": 50000.0
+            },
+            "weighted avg": {
+                "precision": 0.9928,
+                "recall": 0.9928,
+                "f1-score": 0.9928,
+                "support": 50000.0
+            }
+        }
+    },
+    "uncertainty_empirical_coverage_80pct": 98.27,
+    "top_permutation_features": [
+        {
+            "feature": "Orthophosphate (mg/l)",
+            "importance": 1.38119
+        },
+        {
+            "feature": "Ammonia (mg/l)",
+            "importance": 0.11497
+        },
+        {
+            "feature": "Biochemical Oxygen Demand (mg/l)",
+            "importance": 0.04964
+        },
+        {
+            "feature": "pH (ph units)",
+            "importance": 0.0094
+        },
+        {
+            "feature": "log1p_orthophosphate",
+            "importance": 0.00853
+        },
+        {
+            "feature": "Dissolved Oxygen (mg/l)",
+            "importance": 0.00239
+        },
+        {
+            "feature": "Nitrogen (mg/l)",
+            "importance": 0.00138
+        },
+        {
+            "feature": "log1p_ammonia",
+            "importance": 0.00064
+        },
+        {
+            "feature": "Temperature (cel)",
+            "importance": 0.00055
+        },
+        {
+            "feature": "ph_dev_neutral",
+            "importance": 0.00042
+        }
+    ],
+    "ablation_matrix": [
+        {
+            "Configuration": "1. Base 8 Chemistry Features (Site-Split)",
+            "Features": 8,
+            "R\u00b2": 0.9992,
+            "RMSE": 0.3525,
+            "MAE": 0.0873,
+            "Finding": "Underfits complex stoichiometric non-linearities"
+        },
+        {
+            "Configuration": "2. Clean Engineered Features (Production Champion)",
+            "Features": 21,
+            "R\u00b2": 0.9995,
+            "RMSE": 0.2834,
+            "MAE": 0.0704,
+            "Finding": "Optimal balance: high precision with zero formula leakage"
+        },
+        {
+            "Configuration": "3. Engineered + Country Shortcut",
+            "Features": 26,
+            "R\u00b2": 0.9993,
+            "RMSE": 0.3463,
+            "MAE": 0.0858,
+            "Finding": "Negligible gain; risks geographic memorization and fails transferability"
+        },
+        {
+            "Configuration": "4. Engineered + Waterbody One-Hot",
+            "Features": 31,
+            "R\u00b2": 0.9992,
+            "RMSE": 0.349,
+            "MAE": 0.0862,
+            "Finding": "No meaningful improvement over pure stoichiometry"
+        },
+        {
+            "Configuration": "5. Temporal Split (1990-2012 -> 2018-2023)",
+            "Features": 21,
+            "R\u00b2": 0.999,
+            "RMSE": 0.3268,
+            "MAE": 0.0693,
+            "Finding": "Demonstrates temporal robustness across decade-scale distribution shifts"
+        }
+    ]
+}
