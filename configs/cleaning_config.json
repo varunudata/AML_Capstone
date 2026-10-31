@@ -1,0 +1,100 @@
+{
+    "seed": 42,
+    "paths": {
+        "raw_parquet": "data/processed/raw_cached.parquet",
+        "clean_parquet": "data/processed/clean.parquet",
+        "cleaning_log": "reports/02_cleaning_log.md",
+        "cleaning_results": "reports/02_cleaning_results.json"
+    },
+    "duplicates": {
+        "drop": true
+    },
+    "impossible_values": {
+        "Ammonia (mg/l)": {
+            "min": 0, "max": null,
+            "action_below": "set_nan",
+            "action_above": null,
+            "reason_below": "Negative ammonia is physically impossible; likely below-detection-limit code or instrument artefact"
+        },
+        "Biochemical Oxygen Demand (mg/l)": {
+            "min": 0, "max": null,
+            "action_below": "set_nan",
+            "action_above": null,
+            "reason_below": "Negative BOD is physically impossible; likely instrument artefact"
+        },
+        "Dissolved Oxygen (mg/l)": {
+            "min": 0.01, "max": 20,
+            "action_below": "set_nan",
+            "action_above": "set_nan",
+            "reason_below": "DO = 0 is implausible for water samples (instrument error or anoxic artefact)",
+            "reason_above": "DO > 20 mg/l exceeds physical saturation at any plausible temperature"
+        },
+        "Orthophosphate (mg/l)": {
+            "min": 0, "max": null,
+            "action_below": "set_nan",
+            "action_above": null,
+            "reason_below": "Negative orthophosphate is physically impossible"
+        },
+        "pH (ph units)": {
+            "min": 0, "max": 14,
+            "action_below": "set_nan",
+            "action_above": "set_nan",
+            "reason_below": "pH < 0 is not possible for aqueous solutions",
+            "reason_above": "pH > 14 is not possible for aqueous solutions"
+        },
+        "Temperature (cel)": {
+            "min": -2, "max": 40,
+            "action_below": "set_nan",
+            "action_above": "set_nan",
+            "reason_below": "Water temperature below -2°C is implausible (even salt water)",
+            "reason_above": "Water temperature above 40°C is implausible for environmental monitoring (likely sensor error or unit confusion)"
+        },
+        "Nitrogen (mg/l)": {
+            "min": 0, "max": null,
+            "action_below": "set_nan",
+            "action_above": null,
+            "reason_below": "Negative nitrogen is physically impossible"
+        },
+        "Nitrate (mg/l)": {
+            "min": 0, "max": null,
+            "action_below": "set_nan",
+            "action_above": null,
+            "reason_below": "Negative nitrate is physically impossible"
+        }
+    },
+    "extreme_outliers": {
+        "Ammonia (mg/l)": {"upper_threshold": 50, "action": "flag_only"},
+        "Biochemical Oxygen Demand (mg/l)": {"upper_threshold": 100, "action": "flag_only"},
+        "Orthophosphate (mg/l)": {"upper_threshold": 50, "action": "flag_only"},
+        "Nitrate (mg/l)": {"upper_threshold": 100, "action": "flag_only"}
+    },
+    "date_cutoff": {
+        "min_year": 1990,
+        "reason": "Years 1940-1989 contain only ~206k sparse rows across few sites (mostly USA), with very different monitoring regimes. 1990+ provides 97.7% of data."
+    },
+    "waterbody_scope": {
+        "exclude_types": ["Effluent", "Sewage"],
+        "reason": "Effluent (601,550 rows) and Sewage (23,777 rows) are point-source discharges, not ambient water quality. They follow different regulatory standards and have drastically different chemistry distributions (mean CCME 66.6 and 53.7 vs 90.4 for ambient). Including them conflates water quality assessment with wastewater treatment performance.",
+        "require_user_confirmation": true
+    },
+    "target": {
+        "column": "CCME_Values",
+        "type": "continuous_regression",
+        "censoring_note": "36.09% of values are exactly 100.0 (right-censored). The target is bounded [31.3, 100].",
+        "derived_class_column": "CCME_WQI",
+        "class_thresholds": {
+            "Poor": [0, 45],
+            "Marginal": [45, 65],
+            "Fair": [65, 80],
+            "Good": [80, 95],
+            "Excellent": [95, 100]
+        }
+    },
+    "metadata_columns": ["Country", "Area", "Waterbody Type", "Date"],
+    "feature_columns": [
+        "Ammonia (mg/l)", "Biochemical Oxygen Demand (mg/l)",
+        "Dissolved Oxygen (mg/l)", "Orthophosphate (mg/l)",
+        "pH (ph units)", "Temperature (cel)",
+        "Nitrogen (mg/l)", "Nitrate (mg/l)"
+    ]
+}

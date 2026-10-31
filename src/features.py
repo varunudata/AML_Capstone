@@ -558,7 +558,7 @@ def generate_feature_engineering_report(results):
 ## 1. Executive Summary & Core Milestones
 
 1. **Sklearn-Compatible Pipeline Architecture**:
-   Created [`src/features.py`](file:///Users/musthyalasadhvik/Desktop/projects/aml-capstone/AML_Capstone/src/features.py) implementing `WaterQualityFeatureTransformer`, chained inside a standard `Pipeline` with `SimpleImputer(strategy='median')` and `RobustScaler()`. All imputation medians and scaling medians/IQRs are fitted **strictly on training folds**, guaranteeing zero data leakage and full Phase 2 neural network reusability.
+   Created [`src/features.py`](./src/features.py) implementing `WaterQualityFeatureTransformer`, chained inside a standard `Pipeline` with `SimpleImputer(strategy='median')` and `RobustScaler()`. All imputation medians and scaling medians/IQRs are fitted **strictly on training folds**, guaranteeing zero data leakage and full Phase 2 neural network reusability.
 2. **Massive Linear Model Gain via Feature Engineering**:
    On the spatial holdout test set, feature engineering propelled Linear Ridge performance from **$R^2 = {b_ridge['r2']:.4f}$ (RMSE {b_ridge['rmse']:.3f})** to **$R^2 = {e_ridge['r2']:.4f}$ (RMSE {e_ridge['rmse']:.3f})** — an absolute jump of **$+0.4384$ in $R^2$** and a **$62.1\\%$ reduction in RMSE**.
 3. **Formula Leakage Quantification**:
@@ -566,7 +566,7 @@ def generate_feature_engineering_report(results):
 4. **Waterbody Type Ablation Result**:
    Adding one-hot encoded `Waterbody Type` yielded negligible change in Ridge ($R^2$ {ablation[4]['ridge']['r2']} $\\to$ {ablation[5]['ridge']['r2']}) and slightly worsened Tree RMSE ({ablation[4]['hgb']['rmse']} $\\to$ {ablation[5]['hgb']['rmse']}), while adding 10 extraneous dimensions. Per rule ("keep a feature only if ablation supports it"), `Waterbody Type` is excluded from the final chemistry feature set.
 5. **Interactive Notebook**:
-   Maintained [`notebooks/04_feature_engineering.ipynb`](file:///Users/musthyalasadhvik/Desktop/projects/aml-capstone/AML_Capstone/notebooks/04_feature_engineering.ipynb) with full execution outputs, ablation charts, and permutation importance plots.
+   Maintained [`notebooks/04_feature_engineering.ipynb`](./notebooks/04_feature_engineering.ipynb) with full execution outputs, ablation charts, and permutation importance plots.
 
 ---
 
@@ -678,13 +678,13 @@ The final clean, leakage-safe feature set consists of **21 columns**:
 ---
 
 ## 6. Generated Visualizations (300 DPI)
-- **[`fig08_feature_ablation_comparison.png`](file:///Users/musthyalasadhvik/Desktop/projects/aml-capstone/AML_Capstone/reports/figures/fig08_feature_ablation_comparison.png)**: Dual-panel comparison of $R^2$ and RMSE across all 7 configurations.
-- **[`fig09_feature_importance.png`](file:///Users/musthyalasadhvik/Desktop/projects/aml-capstone/AML_Capstone/reports/figures/fig09_feature_importance.png)**: Side-by-side permutation importance for Linear Ridge vs Gradient Boosted Trees.
+- **[`fig08_feature_ablation_comparison.png`](./reports/figures/fig08_feature_ablation_comparison.png)**: Dual-panel comparison of $R^2$ and RMSE across all 7 configurations.
+- **[`fig09_feature_importance.png`](./reports/figures/fig09_feature_importance.png)**: Side-by-side permutation importance for Linear Ridge vs Gradient Boosted Trees.
 
 ---
 
 ## 7. Phase 2 Neural Network / Deep Learning Reusability
-The complete feature engineering, median imputation, and `RobustScaler` steps are encapsulated inside a reusable, picklable `sklearn.pipeline.Pipeline`. Phase 2 can directly import `build_feature_pipeline` from [`src/features.py`](file:///Users/musthyalasadhvik/Desktop/projects/aml-capstone/AML_Capstone/src/features.py) with zero code rewrites or data leakage.
+The complete feature engineering, median imputation, and `RobustScaler` steps are encapsulated inside a reusable, picklable `sklearn.pipeline.Pipeline`. Phase 2 can directly import `build_feature_pipeline` from [`src/features.py`](./src/features.py) with zero code rewrites or data leakage.
 
 ✅ **Stage 4 complete.**
 """

@@ -1,0 +1,51 @@
+{
+    "seed": 42,
+    "target": {
+        "continuous": "CCME_Values",
+        "derived_class": "CCME_WQI",
+        "bounds": [31.3041, 100.0]
+    },
+    "split_policy": {
+        "type": "site_held_out",
+        "group_column": "Area",
+        "train_size": 0.70,
+        "val_size": 0.15,
+        "test_size": 0.15
+    },
+    "xgboost": {
+        "tree_method": "hist",
+        "n_jobs": -1,
+        "n_estimators": 400,
+        "early_stopping_rounds": 25,
+        "eval_metric": "rmse",
+        "tuned_parameters": {
+            "max_depth": 4,
+            "learning_rate": 0.1623,
+            "subsample": 0.7035,
+            "colsample_bytree": 0.8650,
+            "min_child_weight": 4,
+            "reg_alpha": 0.1203,
+            "reg_lambda": 0.1538
+        }
+    },
+    "random_forest": {
+        "n_estimators": 100,
+        "max_depth": 16,
+        "max_features": "sqrt",
+        "n_jobs": -1
+    },
+    "two_stage_hurdle": {
+        "threshold": 0.50,
+        "stage1_classifier": "xgb.XGBClassifier",
+        "stage2_regressor": "xgb.XGBRegressor"
+    },
+    "features": {
+        "raw_chemistry": [
+            "Ammonia (mg/l)", "Biochemical Oxygen Demand (mg/l)",
+            "Dissolved Oxygen (mg/l)", "Orthophosphate (mg/l)",
+            "pH (ph units)", "Temperature (cel)",
+            "Nitrogen (mg/l)", "Nitrate (mg/l)"
+        ],
+        "total_engineered": 21
+    }
+}

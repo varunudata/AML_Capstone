@@ -8,14 +8,14 @@
 
 ## Executive Summary of EDA Artifacts
 
-All 7 publication-quality figures have been generated at **300 DPI** with labeled axes and physical units, stored in [`reports/figures/`](file:///Users/musthyalasadhvik/Desktop/projects/aml-capstone/AML_Capstone/reports/figures):
-1. **[`fig01_target_distribution.png`](file:///Users/musthyalasadhvik/Desktop/projects/aml-capstone/AML_Capstone/reports/figures/fig01_target_distribution.png)**: Target continuous distribution & CCME discrete class balance.
-2. **[`fig02_feature_distributions_before_after.png`](file:///Users/musthyalasadhvik/Desktop/projects/aml-capstone/AML_Capstone/reports/figures/fig02_feature_distributions_before_after.png)**: Feature density comparisons before vs after cleaning across all 8 chemistry variables.
-3. **[`fig03_correlation_heatmaps.png`](file:///Users/musthyalasadhvik/Desktop/projects/aml-capstone/AML_Capstone/reports/figures/fig03_correlation_heatmaps.png)**: Pearson linear and Spearman rank correlation matrices + VIF analysis.
-4. **[`fig04_feature_target_relationships.png`](file:///Users/musthyalasadhvik/Desktop/projects/aml-capstone/AML_Capstone/reports/figures/fig04_feature_target_relationships.png)**: Binned means and hexbin joint distributions against `CCME_Values`.
-5. **[`fig05_target_by_groups_and_time.png`](file:///Users/musthyalasadhvik/Desktop/projects/aml-capstone/AML_Capstone/reports/figures/fig05_target_by_groups_and_time.png)**: Target distributions across Country, Waterbody Type, Observation Year, and Seasonal Month.
-6. **[`fig06_invalid_values_summary.png`](file:///Users/musthyalasadhvik/Desktop/projects/aml-capstone/AML_Capstone/reports/figures/fig06_invalid_values_summary.png)**: Summary of all invalid, non-ambient, and extreme records handled in Stage 2.
-7. **[`fig07_site_sampling_distribution.png`](file:///Users/musthyalasadhvik/Desktop/projects/aml-capstone/AML_Capstone/reports/figures/fig07_site_sampling_distribution.png)**: Monitoring site density and longitudinal site sampling duration.
+All 7 publication-quality figures have been generated at **300 DPI** with labeled axes and physical units, stored in [`reports/figures/`](./reports/figures):
+1. **[`fig01_target_distribution.png`](./reports/figures/fig01_target_distribution.png)**: Target continuous distribution & CCME discrete class balance.
+2. **[`fig02_feature_distributions_before_after.png`](./reports/figures/fig02_feature_distributions_before_after.png)**: Feature density comparisons before vs after cleaning across all 8 chemistry variables.
+3. **[`fig03_correlation_heatmaps.png`](./reports/figures/fig03_correlation_heatmaps.png)**: Pearson linear and Spearman rank correlation matrices + VIF analysis.
+4. **[`fig04_feature_target_relationships.png`](./reports/figures/fig04_feature_target_relationships.png)**: Binned means and hexbin joint distributions against `CCME_Values`.
+5. **[`fig05_target_by_groups_and_time.png`](./reports/figures/fig05_target_by_groups_and_time.png)**: Target distributions across Country, Waterbody Type, Observation Year, and Seasonal Month.
+6. **[`fig06_invalid_values_summary.png`](./reports/figures/fig06_invalid_values_summary.png)**: Summary of all invalid, non-ambient, and extreme records handled in Stage 2.
+7. **[`fig07_site_sampling_distribution.png`](./reports/figures/fig07_site_sampling_distribution.png)**: Monitoring site density and longitudinal site sampling duration.
 
 ---
 
@@ -91,6 +91,6 @@ All 7 publication-quality figures have been generated at **300 DPI** with labele
 ---
 
 ## Stage 3 Verification
-- All plots generated at 300 DPI in [`reports/figures/`](file:///Users/musthyalasadhvik/Desktop/projects/aml-capstone/AML_Capstone/reports/figures).
-- Full numerical outputs saved in [`reports/03_eda_results.json`](file:///Users/musthyalasadhvik/Desktop/projects/aml-capstone/AML_Capstone/reports/03_eda_results.json).
+- All plots generated at 300 DPI in [`reports/figures/`](./reports/figures).
+- Full numerical outputs saved in [`reports/03_eda_results.json`](./reports/03_eda_results.json).
 - Stage 3 complete.
