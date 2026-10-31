@@ -1,0 +1,428 @@
+{
+  "sample_total": 250000,
+  "train_size": 195554,
+  "test_size": 54446,
+  "train_sites": 22020,
+  "test_sites": 5506,
+  "ablation_study": [
+    {
+      "name": "1. Base 8 Chemistry",
+      "description": "Benchmark: Raw unscaled chemical variables",
+      "n_features": 8,
+      "features_list": [
+        "Ammonia (mg/l)",
+        "Biochemical Oxygen Demand (mg/l)",
+        "Dissolved Oxygen (mg/l)",
+        "Orthophosphate (mg/l)",
+        "pH (ph units)",
+        "Temperature (cel)",
+        "Nitrogen (mg/l)",
+        "Nitrate (mg/l)"
+      ],
+      "ridge": {
+        "r2": 0.5176,
+        "rmse": 9.0198,
+        "mae": 6.6792
+      },
+      "hgb": {
+        "r2": 0.9992,
+        "rmse": 0.3696,
+        "mae": 0.1113
+      }
+    },
+    {
+      "name": "2. Base + Log1p",
+      "description": "Candidate: Log transforms of skewed concentrations",
+      "n_features": 13,
+      "features_list": [
+        "Ammonia (mg/l)",
+        "Biochemical Oxygen Demand (mg/l)",
+        "Dissolved Oxygen (mg/l)",
+        "Orthophosphate (mg/l)",
+        "pH (ph units)",
+        "Temperature (cel)",
+        "Nitrogen (mg/l)",
+        "Nitrate (mg/l)",
+        "log1p_ammonia",
+        "log1p_biochemical",
+        "log1p_orthophosphate",
+        "log1p_nitrogen",
+        "log1p_nitrate"
+      ],
+      "ridge": {
+        "r2": 0.8872,
+        "rmse": 4.3613,
+        "mae": 3.0815
+      },
+      "hgb": {
+        "r2": 0.9992,
+        "rmse": 0.3696,
+        "mae": 0.1113
+      }
+    },
+    {
+      "name": "3. Base + Interactions",
+      "description": "Candidate: DO sat, N:P ratio, Nitrate/N ratio, pH deviations",
+      "n_features": 14,
+      "features_list": [
+        "Ammonia (mg/l)",
+        "Biochemical Oxygen Demand (mg/l)",
+        "Dissolved Oxygen (mg/l)",
+        "Orthophosphate (mg/l)",
+        "pH (ph units)",
+        "Temperature (cel)",
+        "Nitrogen (mg/l)",
+        "Nitrate (mg/l)",
+        "do_sat_ratio",
+        "do_deficit",
+        "log_np_ratio",
+        "nitrate_to_n_ratio",
+        "ph_dev_neutral",
+        "ph_dist_buffer"
+      ],
+      "ridge": {
+        "r2": 0.7006,
+        "rmse": 7.1064,
+        "mae": 5.2177
+      },
+      "hgb": {
+        "r2": 0.9992,
+        "rmse": 0.371,
+        "mae": 0.1116
+      }
+    },
+    {
+      "name": "4. Base + Month sin/cos",
+      "description": "Candidate: Cyclical month harmonics",
+      "n_features": 10,
+      "features_list": [
+        "Ammonia (mg/l)",
+        "Biochemical Oxygen Demand (mg/l)",
+        "Dissolved Oxygen (mg/l)",
+        "Orthophosphate (mg/l)",
+        "pH (ph units)",
+        "Temperature (cel)",
+        "Nitrogen (mg/l)",
+        "Nitrate (mg/l)",
+        "month_sin",
+        "month_cos"
+      ],
+      "ridge": {
+        "r2": 0.5166,
+        "rmse": 9.0292,
+        "mae": 6.6997
+      },
+      "hgb": {
+        "r2": 0.9992,
+        "rmse": 0.3719,
+        "mae": 0.112
+      }
+    },
+    {
+      "name": "5. Clean Engineered (Non-Leak)",
+      "description": "Production Set: Base + Log1p + Interactions + Month",
+      "n_features": 21,
+      "features_list": [
+        "Ammonia (mg/l)",
+        "Biochemical Oxygen Demand (mg/l)",
+        "Dissolved Oxygen (mg/l)",
+        "Orthophosphate (mg/l)",
+        "pH (ph units)",
+        "Temperature (cel)",
+        "Nitrogen (mg/l)",
+        "Nitrate (mg/l)",
+        "log1p_ammonia",
+        "log1p_biochemical",
+        "log1p_orthophosphate",
+        "log1p_nitrogen",
+        "log1p_nitrate",
+        "do_sat_ratio",
+        "do_deficit",
+        "log_np_ratio",
+        "nitrate_to_n_ratio",
+        "ph_dev_neutral",
+        "ph_dist_buffer",
+        "month_sin",
+        "month_cos"
+      ],
+      "ridge": {
+        "r2": 0.9204,
+        "rmse": 3.6652,
+        "mae": 2.6049
+      },
+      "hgb": {
+        "r2": 0.9992,
+        "rmse": 0.3732,
+        "mae": 0.112
+      }
+    },
+    {
+      "name": "6. Clean Engineered + Waterbody",
+      "description": "Ablation: Waterbody Type one-hot encoding",
+      "n_features": 31,
+      "features_list": [
+        "Ammonia (mg/l)",
+        "Biochemical Oxygen Demand (mg/l)",
+        "Dissolved Oxygen (mg/l)",
+        "Orthophosphate (mg/l)",
+        "pH (ph units)",
+        "Temperature (cel)",
+        "Nitrogen (mg/l)",
+        "Nitrate (mg/l)",
+        "log1p_ammonia",
+        "log1p_biochemical",
+        "log1p_orthophosphate",
+        "log1p_nitrogen",
+        "log1p_nitrate",
+        "do_sat_ratio",
+        "do_deficit",
+        "log_np_ratio",
+        "nitrate_to_n_ratio",
+        "ph_dev_neutral",
+        "ph_dist_buffer",
+        "month_sin",
+        "month_cos",
+        "wb_River",
+        "wb_Bay",
+        "wb_Estuarine",
+        "wb_Sea Water",
+        "wb_Lake",
+        "wb_Marine",
+        "wb_Canal",
+        "wb_Drainage",
+        "wb_Coastal",
+        "wb_Transitional"
+      ],
+      "ridge": {
+        "r2": 0.9211,
+        "rmse": 3.6481,
+        "mae": 2.5764
+      },
+      "hgb": {
+        "r2": 0.9992,
+        "rmse": 0.3734,
+        "mae": 0.1117
+      }
+    },
+    {
+      "name": "7. Clean Engineered + Exceedances (Leakage)",
+      "description": "Formula Leakage Warning: Direct guideline exceedances",
+      "n_features": 29,
+      "features_list": [
+        "Ammonia (mg/l)",
+        "Biochemical Oxygen Demand (mg/l)",
+        "Dissolved Oxygen (mg/l)",
+        "Orthophosphate (mg/l)",
+        "pH (ph units)",
+        "Temperature (cel)",
+        "Nitrogen (mg/l)",
+        "Nitrate (mg/l)",
+        "log1p_ammonia",
+        "log1p_biochemical",
+        "log1p_orthophosphate",
+        "log1p_nitrogen",
+        "log1p_nitrate",
+        "do_sat_ratio",
+        "do_deficit",
+        "log_np_ratio",
+        "nitrate_to_n_ratio",
+        "ph_dev_neutral",
+        "ph_dist_buffer",
+        "month_sin",
+        "month_cos",
+        "exc_ammonia",
+        "exc_bod",
+        "exc_do",
+        "exc_orthophosphate",
+        "exc_ph",
+        "exc_temperature",
+        "exc_nitrate",
+        "exc_total_count"
+      ],
+      "ridge": {
+        "r2": 0.9409,
+        "rmse": 3.1567,
+        "mae": 2.0934
+      },
+      "hgb": {
+        "r2": 0.9992,
+        "rmse": 0.3755,
+        "mae": 0.1129
+      }
+    }
+  ],
+  "permutation_importance": {
+    "ridge": {
+      "Ammonia (mg/l)": {
+        "mean": 0.00085,
+        "std": 4e-05
+      },
+      "Biochemical Oxygen Demand (mg/l)": {
+        "mean": 0.00159,
+        "std": 6e-05
+      },
+      "Dissolved Oxygen (mg/l)": {
+        "mean": 0.05335,
+        "std": 0.00039
+      },
+      "Orthophosphate (mg/l)": {
+        "mean": 0.04783,
+        "std": 0.00041
+      },
+      "pH (ph units)": {
+        "mean": 0.00403,
+        "std": 7e-05
+      },
+      "Temperature (cel)": {
+        "mean": 0.01048,
+        "std": 0.00024
+      },
+      "Nitrogen (mg/l)": {
+        "mean": 0.04409,
+        "std": 0.00035
+      },
+      "Nitrate (mg/l)": {
+        "mean": 0.00457,
+        "std": 0.0001
+      },
+      "log1p_ammonia": {
+        "mean": 0.11402,
+        "std": 0.00031
+      },
+      "log1p_biochemical": {
+        "mean": 0.01155,
+        "std": 0.00013
+      },
+      "log1p_orthophosphate": {
+        "mean": 0.63389,
+        "std": 0.00162
+      },
+      "log1p_nitrogen": {
+        "mean": 0.60463,
+        "std": 0.00195
+      },
+      "log1p_nitrate": {
+        "mean": 0.00105,
+        "std": 6e-05
+      },
+      "do_sat_ratio": {
+        "mean": 0.00039,
+        "std": 3e-05
+      },
+      "do_deficit": {
+        "mean": 0.05217,
+        "std": 0.00051
+      },
+      "log_np_ratio": {
+        "mean": 0.25535,
+        "std": 0.00162
+      },
+      "nitrate_to_n_ratio": {
+        "mean": 0.0,
+        "std": 2e-05
+      },
+      "ph_dev_neutral": {
+        "mean": 0.00098,
+        "std": 2e-05
+      },
+      "ph_dist_buffer": {
+        "mean": 0.00354,
+        "std": 0.00011
+      },
+      "month_sin": {
+        "mean": 0.00078,
+        "std": 7e-05
+      },
+      "month_cos": {
+        "mean": 0.00068,
+        "std": 6e-05
+      }
+    },
+    "hgb": {
+      "Ammonia (mg/l)": {
+        "mean": 0.16881,
+        "std": 0.00095
+      },
+      "Biochemical Oxygen Demand (mg/l)": {
+        "mean": 0.05216,
+        "std": 0.00105
+      },
+      "Dissolved Oxygen (mg/l)": {
+        "mean": 0.00279,
+        "std": 2e-05
+      },
+      "Orthophosphate (mg/l)": {
+        "mean": 1.54318,
+        "std": 0.00399
+      },
+      "pH (ph units)": {
+        "mean": 0.00918,
+        "std": 7e-05
+      },
+      "Temperature (cel)": {
+        "mean": 0.00011,
+        "std": 0.0
+      },
+      "Nitrogen (mg/l)": {
+        "mean": 0.00265,
+        "std": 4e-05
+      },
+      "Nitrate (mg/l)": {
+        "mean": 0.00081,
+        "std": 2e-05
+      },
+      "log1p_ammonia": {
+        "mean": 0.0,
+        "std": 0.0
+      },
+      "log1p_biochemical": {
+        "mean": 0.0,
+        "std": 0.0
+      },
+      "log1p_orthophosphate": {
+        "mean": 0.0,
+        "std": 0.0
+      },
+      "log1p_nitrogen": {
+        "mean": 0.0,
+        "std": 0.0
+      },
+      "log1p_nitrate": {
+        "mean": 0.0,
+        "std": 0.0
+      },
+      "do_sat_ratio": {
+        "mean": 0.0,
+        "std": 0.0
+      },
+      "do_deficit": {
+        "mean": 0.0,
+        "std": 0.0
+      },
+      "log_np_ratio": {
+        "mean": 1e-05,
+        "std": 0.0
+      },
+      "nitrate_to_n_ratio": {
+        "mean": -0.0,
+        "std": 0.0
+      },
+      "ph_dev_neutral": {
+        "mean": 1e-05,
+        "std": 0.0
+      },
+      "ph_dist_buffer": {
+        "mean": 0.0,
+        "std": 0.0
+      },
+      "month_sin": {
+        "mean": 0.0,
+        "std": 0.0
+      },
+      "month_cos": {
+        "mean": -0.0,
+        "std": 0.0
+      }
+    }
+  }
+}
