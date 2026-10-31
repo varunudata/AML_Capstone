@@ -1,0 +1,778 @@
+{
+  "basic_info": {
+    "shape": [
+      2827977,
+      14
+    ],
+    "memory_mb": 328.49,
+    "dtypes": {
+      "Country": "category",
+      "Area": "str",
+      "Waterbody Type": "category",
+      "Date": "datetime64[us]",
+      "Ammonia (mg/l)": "float64",
+      "Biochemical Oxygen Demand (mg/l)": "float64",
+      "Dissolved Oxygen (mg/l)": "float64",
+      "Orthophosphate (mg/l)": "float64",
+      "pH (ph units)": "float64",
+      "Temperature (cel)": "float64",
+      "Nitrogen (mg/l)": "float64",
+      "Nitrate (mg/l)": "float64",
+      "CCME_Values": "float64",
+      "CCME_WQI": "category"
+    },
+    "missing_counts": {
+      "Country": 0,
+      "Area": 0,
+      "Waterbody Type": 0,
+      "Date": 0,
+      "Ammonia (mg/l)": 0,
+      "Biochemical Oxygen Demand (mg/l)": 0,
+      "Dissolved Oxygen (mg/l)": 0,
+      "Orthophosphate (mg/l)": 0,
+      "pH (ph units)": 0,
+      "Temperature (cel)": 0,
+      "Nitrogen (mg/l)": 0,
+      "Nitrate (mg/l)": 0,
+      "CCME_Values": 0,
+      "CCME_WQI": 0
+    },
+    "total_missing": 0,
+    "exact_duplicates": 9971,
+    "unique_counts": {
+      "Country": 5,
+      "Area": 61689,
+      "Waterbody Type": 12,
+      "Date": 23876,
+      "Ammonia (mg/l)": 13987,
+      "Biochemical Oxygen Demand (mg/l)": 4717,
+      "Dissolved Oxygen (mg/l)": 16253,
+      "Orthophosphate (mg/l)": 10596,
+      "pH (ph units)": 4726,
+      "Temperature (cel)": 11536,
+      "Nitrogen (mg/l)": 16232,
+      "Nitrate (mg/l)": 10823,
+      "CCME_Values": 221931,
+      "CCME_WQI": 5
+    }
+  },
+  "percentiles": {
+    "count": {
+      "Ammonia (mg/l)": 2827977.0,
+      "Biochemical Oxygen Demand (mg/l)": 2827977.0,
+      "Dissolved Oxygen (mg/l)": 2827977.0,
+      "Orthophosphate (mg/l)": 2827977.0,
+      "pH (ph units)": 2827977.0,
+      "Temperature (cel)": 2827977.0,
+      "Nitrogen (mg/l)": 2827977.0,
+      "Nitrate (mg/l)": 2827977.0,
+      "CCME_Values": 2827977.0
+    },
+    "mean": {
+      "Ammonia (mg/l)": 1.1713600500499273,
+      "Biochemical Oxygen Demand (mg/l)": 4.886553941034695,
+      "Dissolved Oxygen (mg/l)": 10.007978115104429,
+      "Orthophosphate (mg/l)": 0.7104658418587827,
+      "pH (ph units)": 7.735931225514729,
+      "Temperature (cel)": 11.839340805141187,
+      "Nitrogen (mg/l)": 5.209531117582257,
+      "Nitrate (mg/l)": 4.766793783996902,
+      "CCME_Values": 85.04668319458057
+    },
+    "std": {
+      "Ammonia (mg/l)": 5.668927217060017,
+      "Biochemical Oxygen Demand (mg/l)": 16.413631699045794,
+      "Dissolved Oxygen (mg/l)": 1.8510522588728007,
+      "Orthophosphate (mg/l)": 2.0894361073969683,
+      "pH (ph units)": 0.49468713562479594,
+      "Temperature (cel)": 5.01019670390117,
+      "Nitrogen (mg/l)": 6.200423444934358,
+      "Nitrate (mg/l)": 6.073780760406489,
+      "CCME_Values": 17.646646369267746
+    },
+    "min": {
+      "Ammonia (mg/l)": -0.005,
+      "Biochemical Oxygen Demand (mg/l)": -2.0,
+      "Dissolved Oxygen (mg/l)": 0.0,
+      "Orthophosphate (mg/l)": -0.004,
+      "pH (ph units)": -1.0,
+      "Temperature (cel)": -5.26,
+      "Nitrogen (mg/l)": 0.0,
+      "Nitrate (mg/l)": 0.0,
+      "CCME_Values": 31.304144443793305
+    },
+    "0%": {
+      "Ammonia (mg/l)": -0.005,
+      "Biochemical Oxygen Demand (mg/l)": -2.0,
+      "Dissolved Oxygen (mg/l)": 0.0,
+      "Orthophosphate (mg/l)": -0.004,
+      "pH (ph units)": -1.0,
+      "Temperature (cel)": -5.26,
+      "Nitrogen (mg/l)": 0.0,
+      "Nitrate (mg/l)": 0.0,
+      "CCME_Values": 31.304144443793305
+    },
+    "1%": {
+      "Ammonia (mg/l)": 0.009,
+      "Biochemical Oxygen Demand (mg/l)": 0.7,
+      "Dissolved Oxygen (mg/l)": 3.5505,
+      "Orthophosphate (mg/l)": 0.004,
+      "pH (ph units)": 6.3,
+      "Temperature (cel)": 2.97,
+      "Nitrogen (mg/l)": 0.019,
+      "Nitrate (mg/l)": 0.046,
+      "CCME_Values": 40.884501419814555
+    },
+    "5%": {
+      "Ammonia (mg/l)": 0.021,
+      "Biochemical Oxygen Demand (mg/l)": 1.0,
+      "Dissolved Oxygen (mg/l)": 5.7,
+      "Orthophosphate (mg/l)": 0.01,
+      "pH (ph units)": 7.0,
+      "Temperature (cel)": 5.0,
+      "Nitrogen (mg/l)": 0.2,
+      "Nitrate (mg/l)": 0.2,
+      "CCME_Values": 45.458886067627596
+    },
+    "10%": {
+      "Ammonia (mg/l)": 0.021,
+      "Biochemical Oxygen Demand (mg/l)": 1.1,
+      "Dissolved Oxygen (mg/l)": 8.1,
+      "Orthophosphate (mg/l)": 0.02,
+      "pH (ph units)": 7.2,
+      "Temperature (cel)": 6.3,
+      "Nitrogen (mg/l)": 0.4,
+      "Nitrate (mg/l)": 0.556,
+      "CCME_Values": 51.834626142874264
+    },
+    "25%": {
+      "Ammonia (mg/l)": 0.03,
+      "Biochemical Oxygen Demand (mg/l)": 1.6,
+      "Dissolved Oxygen (mg/l)": 9.86,
+      "Orthophosphate (mg/l)": 0.04,
+      "pH (ph units)": 7.55,
+      "Temperature (cel)": 8.99,
+      "Nitrogen (mg/l)": 0.78,
+      "Nitrate (mg/l)": 1.173,
+      "CCME_Values": 77.1534931011924
+    },
+    "50%": {
+      "Ammonia (mg/l)": 0.055,
+      "Biochemical Oxygen Demand (mg/l)": 2.7,
+      "Dissolved Oxygen (mg/l)": 10.2,
+      "Orthophosphate (mg/l)": 0.107,
+      "pH (ph units)": 7.78,
+      "Temperature (cel)": 11.46,
+      "Nitrogen (mg/l)": 4.0,
+      "Nitrate (mg/l)": 4.5,
+      "CCME_Values": 90.59608968249265
+    },
+    "75%": {
+      "Ammonia (mg/l)": 0.317,
+      "Biochemical Oxygen Demand (mg/l)": 2.83,
+      "Dissolved Oxygen (mg/l)": 11.0,
+      "Orthophosphate (mg/l)": 0.227,
+      "pH (ph units)": 8.0,
+      "Temperature (cel)": 14.2,
+      "Nitrogen (mg/l)": 6.32,
+      "Nitrate (mg/l)": 4.94,
+      "CCME_Values": 100.0
+    },
+    "90%": {
+      "Ammonia (mg/l)": 1.54,
+      "Biochemical Oxygen Demand (mg/l)": 6.85,
+      "Dissolved Oxygen (mg/l)": 11.684103383014412,
+      "Orthophosphate (mg/l)": 1.82,
+      "pH (ph units)": 8.2,
+      "Temperature (cel)": 17.37,
+      "Nitrogen (mg/l)": 12.4,
+      "Nitrate (mg/l)": 9.83,
+      "CCME_Values": 100.0
+    },
+    "95%": {
+      "Ammonia (mg/l)": 4.45816470579977,
+      "Biochemical Oxygen Demand (mg/l)": 11.7,
+      "Dissolved Oxygen (mg/l)": 12.2,
+      "Orthophosphate (mg/l)": 4.9,
+      "pH (ph units)": 8.3,
+      "Temperature (cel)": 19.2,
+      "Nitrogen (mg/l)": 18.3,
+      "Nitrate (mg/l)": 14.5,
+      "CCME_Values": 100.0
+    },
+    "99%": {
+      "Ammonia (mg/l)": 26.7,
+      "Biochemical Oxygen Demand (mg/l)": 68.2,
+      "Dissolved Oxygen (mg/l)": 13.5,
+      "Orthophosphate (mg/l)": 9.14,
+      "pH (ph units)": 8.7,
+      "Temperature (cel)": 25.7,
+      "Nitrogen (mg/l)": 30.3,
+      "Nitrate (mg/l)": 28.3,
+      "CCME_Values": 100.0
+    },
+    "100%": {
+      "Ammonia (mg/l)": 200.0,
+      "Biochemical Oxygen Demand (mg/l)": 255.0,
+      "Dissolved Oxygen (mg/l)": 20.0,
+      "Orthophosphate (mg/l)": 100.0,
+      "pH (ph units)": 30.0,
+      "Temperature (cel)": 98.0,
+      "Nitrogen (mg/l)": 46.0,
+      "Nitrate (mg/l)": 155.0,
+      "CCME_Values": 100.0
+    },
+    "max": {
+      "Ammonia (mg/l)": 200.0,
+      "Biochemical Oxygen Demand (mg/l)": 255.0,
+      "Dissolved Oxygen (mg/l)": 20.0,
+      "Orthophosphate (mg/l)": 100.0,
+      "pH (ph units)": 30.0,
+      "Temperature (cel)": 98.0,
+      "Nitrogen (mg/l)": 46.0,
+      "Nitrate (mg/l)": 155.0,
+      "CCME_Values": 100.0
+    }
+  },
+  "group_counts": {
+    "by_country": {
+      "England": 2129198,
+      "USA": 413814,
+      "Ireland": 235019,
+      "China": 45997,
+      "Canada": 3949
+    },
+    "by_waterbody": {
+      "River": 1852579,
+      "Effluent": 601550,
+      "Lake": 153603,
+      "Estuarine": 49375,
+      "Bay": 45997,
+      "Sea Water": 32061,
+      "Canal": 28574,
+      "Sewage": 23777,
+      "Marine": 23162,
+      "Drainage": 10205,
+      "Transitional": 4275,
+      "Coastal": 2819
+    },
+    "by_year": {
+      "1940": 163,
+      "1941": 265,
+      "1942": 215,
+      "1943": 205,
+      "1944": 251,
+      "1945": 252,
+      "1946": 295,
+      "1947": 389,
+      "1948": 488,
+      "1949": 967,
+      "1950": 693,
+      "1951": 1818,
+      "1952": 2701,
+      "1953": 3585,
+      "1954": 3428,
+      "1955": 3661,
+      "1956": 3693,
+      "1957": 4412,
+      "1958": 5180,
+      "1959": 6535,
+      "1960": 6202,
+      "1961": 5487,
+      "1962": 6305,
+      "1963": 6223,
+      "1964": 6571,
+      "1965": 5985,
+      "1966": 6192,
+      "1967": 5110,
+      "1968": 4741,
+      "1969": 4855,
+      "1970": 5471,
+      "1971": 5402,
+      "1972": 5733,
+      "1973": 6261,
+      "1974": 6495,
+      "1975": 6402,
+      "1976": 6325,
+      "1977": 7897,
+      "1978": 6558,
+      "1979": 6759,
+      "1980": 6014,
+      "1981": 5483,
+      "1982": 5159,
+      "1983": 4341,
+      "1984": 4499,
+      "1985": 4350,
+      "1986": 4131,
+      "1987": 4060,
+      "1988": 4062,
+      "1989": 3414,
+      "1990": 3013,
+      "1991": 2453,
+      "1992": 1513,
+      "1993": 2687,
+      "1994": 3132,
+      "1995": 3633,
+      "1996": 5163,
+      "1997": 4528,
+      "1998": 5276,
+      "1999": 6008,
+      "2000": 136609,
+      "2001": 120458,
+      "2002": 137777,
+      "2003": 136686,
+      "2004": 136037,
+      "2005": 134302,
+      "2006": 130829,
+      "2007": 132699,
+      "2008": 127733,
+      "2009": 113025,
+      "2010": 102980,
+      "2011": 107075,
+      "2012": 120690,
+      "2013": 131077,
+      "2014": 112662,
+      "2015": 105286,
+      "2016": 97868,
+      "2017": 85195,
+      "2018": 75465,
+      "2019": 87462,
+      "2020": 49432,
+      "2021": 72570,
+      "2022": 76639,
+      "2023": 54332
+    },
+    "year_range": [
+      1940,
+      2023
+    ],
+    "area_top20": {
+      "Lake Washington": 54281,
+      "Hou Bay": 45997,
+      "Lake Sammamish": 26818,
+      "Central Puget Sound": 22499,
+      "Los Angeles": 21478,
+      "San Joaquin": 17868,
+      "Lake Union/Ship Canal": 13666,
+      "Contra Costa": 11699,
+      "San Bernardino": 9935,
+      "Sacramento": 9404,
+      "Kern": 9345,
+      "Blackwater_Munster, Blackwater (Munster)": 8798,
+      "Ventura": 8209,
+      "Riverside": 7391,
+      "Fresno": 6807,
+      "Solano": 6682,
+      "Merced": 6362,
+      "Butte": 6354,
+      "Lake": 6056,
+      "Santa Clara": 5975
+    },
+    "area_stats": {
+      "n_distinct": 61689,
+      "max_rows": 54281,
+      "max_area": "Lake Washington",
+      "median_rows": 9.0,
+      "mean_rows": 45.84,
+      "areas_lt_10_rows": 31888,
+      "areas_lt_5_rows": 25063,
+      "areas_eq_1_row": 14527
+    }
+  },
+  "plausibility": {
+    "Ammonia (mg/l)": {
+      "below_min": 2,
+      "above_max": 6658,
+      "exactly_zero": 1390,
+      "negative": 2,
+      "plausible_range": "[0, 50]",
+      "actual_min": -0.005,
+      "actual_max": 200.0
+    },
+    "Biochemical Oxygen Demand (mg/l)": {
+      "below_min": 2,
+      "above_max": 21244,
+      "exactly_zero": 75,
+      "negative": 2,
+      "plausible_range": "[0, 100]",
+      "actual_min": -2.0,
+      "actual_max": 255.0
+    },
+    "Dissolved Oxygen (mg/l)": {
+      "below_min": 0,
+      "above_max": 0,
+      "exactly_zero": 39,
+      "negative": 0,
+      "plausible_range": "[0, 20]",
+      "actual_min": 0.0,
+      "actual_max": 20.0
+    },
+    "Orthophosphate (mg/l)": {
+      "below_min": 10,
+      "above_max": 302,
+      "exactly_zero": 690,
+      "negative": 10,
+      "plausible_range": "[0, 50]",
+      "actual_min": -0.004,
+      "actual_max": 100.0
+    },
+    "pH (ph units)": {
+      "below_min": 1,
+      "above_max": 504,
+      "exactly_zero": 13,
+      "negative": 1,
+      "plausible_range": "[0, 14]",
+      "actual_min": -1.0,
+      "actual_max": 30.0
+    },
+    "Temperature (cel)": {
+      "below_min": 1,
+      "above_max": 6818,
+      "exactly_zero": 266,
+      "negative": 32,
+      "plausible_range": "[-5, 45]",
+      "actual_min": -5.26,
+      "actual_max": 98.0
+    },
+    "Nitrogen (mg/l)": {
+      "below_min": 0,
+      "above_max": 0,
+      "exactly_zero": 131,
+      "negative": 0,
+      "plausible_range": "[0, 200]",
+      "actual_min": 0.0,
+      "actual_max": 46.0
+    },
+    "Nitrate (mg/l)": {
+      "below_min": 0,
+      "above_max": 0,
+      "exactly_zero": 1175,
+      "negative": 0,
+      "plausible_range": "[0, 200]",
+      "actual_min": 0.0,
+      "actual_max": 155.0
+    }
+  },
+  "ccme_classes": {
+    "classes_in_data": [
+      "Excellent",
+      "Fair",
+      "Good",
+      "Marginal",
+      "Poor"
+    ],
+    "Excellent": {
+      "count": 1020710,
+      "min": 100.0,
+      "max": 100.0,
+      "mean": 100.0,
+      "pct_of_total": 36.09
+    },
+    "Fair": {
+      "count": 317856,
+      "min": 65.00008892604703,
+      "max": 79.99827482207102,
+      "mean": 73.2705,
+      "pct_of_total": 11.24
+    },
+    "Good": {
+      "count": 1033709,
+      "min": 80.00089213051515,
+      "max": 93.19566222876686,
+      "mean": 89.1943,
+      "pct_of_total": 36.55
+    },
+    "Marginal": {
+      "count": 328734,
+      "min": 45.00001729275672,
+      "max": 64.99997311020056,
+      "mean": 53.4232,
+      "pct_of_total": 11.62
+    },
+    "Poor": {
+      "count": 126968,
+      "min": 31.304144443793305,
+      "max": 44.99996480841565,
+      "mean": 42.4255,
+      "pct_of_total": 4.49
+    },
+    "boundaries": {
+      "Excellent": [
+        100.0,
+        100.0
+      ],
+      "Fair": [
+        65.00008892604703,
+        79.99827482207102
+      ],
+      "Good": [
+        80.00089213051515,
+        93.19566222876686
+      ],
+      "Marginal": [
+        45.00001729275672,
+        64.99997311020056
+      ],
+      "Poor": [
+        31.304144443793305,
+        44.99996480841565
+      ]
+    },
+    "values_at_100": 1020710,
+    "pct_at_100": 36.09
+  },
+  "leakage": {
+    "linear_regression_raw_features": {
+      "r2": 0.642,
+      "mae": 7.9086,
+      "n_samples": 500000,
+      "features_used": [
+        "Ammonia (mg/l)",
+        "Biochemical Oxygen Demand (mg/l)",
+        "Dissolved Oxygen (mg/l)",
+        "Orthophosphate (mg/l)",
+        "pH (ph units)",
+        "Temperature (cel)",
+        "Nitrogen (mg/l)",
+        "Nitrate (mg/l)"
+      ]
+    },
+    "feature_target_correlations": {
+      "pearson": {
+        "Ammonia (mg/l)": -0.392,
+        "Biochemical Oxygen Demand (mg/l)": -0.3204,
+        "Dissolved Oxygen (mg/l)": -0.0297,
+        "Orthophosphate (mg/l)": -0.6618,
+        "pH (ph units)": 0.0784,
+        "Temperature (cel)": -0.1082,
+        "Nitrogen (mg/l)": -0.6107,
+        "Nitrate (mg/l)": -0.3071
+      },
+      "spearman": {
+        "Ammonia (mg/l)": -0.7208,
+        "Biochemical Oxygen Demand (mg/l)": -0.5351,
+        "Dissolved Oxygen (mg/l)": -0.0234,
+        "Orthophosphate (mg/l)": -0.9167,
+        "pH (ph units)": 0.1077,
+        "Temperature (cel)": -0.1502,
+        "Nitrogen (mg/l)": -0.6013,
+        "Nitrate (mg/l)": -0.5003
+      }
+    },
+    "exceedance_features_only": {
+      "r2": 0.5922,
+      "mae": 8.224,
+      "guidelines_used": {
+        "Ammonia (mg/l)": "(None, 1.0)",
+        "Biochemical Oxygen Demand (mg/l)": "(None, 4.0)",
+        "Dissolved Oxygen (mg/l)": "(6.5, None)",
+        "Orthophosphate (mg/l)": "(None, 0.1)",
+        "pH (ph units)": "(6.5, 8.5)",
+        "Temperature (cel)": "(None, 25.0)",
+        "Nitrogen (mg/l)": "(None, 2.9)",
+        "Nitrate (mg/l)": "(None, 13.0)"
+      },
+      "note": "Simple count of exceedances using approximate Canadian guidelines"
+    },
+    "leakage_statement": "CCME WQI is computed from guideline exceedances (F1 scope, F2 frequency, F3 amplitude) of the SAME chemistry variables used as predictors. This means the ML task is partly 're-learning a deterministic formula'. A simple linear regression on raw chemistry features achieves R\u00b2=0.642. Even a single exceedance-count feature achieves R\u00b2=0.592. This inherent information overlap must be disclosed. The task still has value: (1) the exact guidelines/thresholds may vary by jurisdiction, (2) the CCME formula is non-linear, (3) we can study generalization across Countries and time."
+  },
+  "distribution_shift": {
+    "by_country": {
+      "Canada": {
+        "n": 3949,
+        "mean": 90.22,
+        "median": 93.12,
+        "std": 12.36,
+        "pct_at_100": 35.48,
+        "class_distribution": {
+          "Good": 52.19,
+          "Excellent": 35.48,
+          "Fair": 5.93,
+          "Marginal": 4.81,
+          "Poor": 1.6
+        }
+      },
+      "China": {
+        "n": 45997,
+        "mean": 96.51,
+        "median": 100.0,
+        "std": 4.62,
+        "pct_at_100": 54.6,
+        "class_distribution": {
+          "Excellent": 54.6,
+          "Good": 44.4,
+          "Fair": 0.73,
+          "Marginal": 0.26,
+          "Poor": 0.0
+        }
+      },
+      "England": {
+        "n": 2129198,
+        "mean": 80.74,
+        "median": 88.76,
+        "std": 18.13,
+        "pct_at_100": 20.93,
+        "class_distribution": {
+          "Good": 43.18,
+          "Excellent": 20.93,
+          "Marginal": 15.29,
+          "Fair": 14.71,
+          "Poor": 5.89
+        }
+      },
+      "Ireland": {
+        "n": 235019,
+        "mean": 98.11,
+        "median": 100.0,
+        "std": 6.41,
+        "pct_at_100": 84.24,
+        "class_distribution": {
+          "Excellent": 84.24,
+          "Good": 14.07,
+          "Fair": 0.69,
+          "Poor": 0.61,
+          "Marginal": 0.39
+        }
+      },
+      "USA": {
+        "n": 413814,
+        "mean": 98.46,
+        "median": 100.0,
+        "std": 4.67,
+        "pct_at_100": 84.74,
+        "class_distribution": {
+          "Excellent": 84.74,
+          "Good": 14.2,
+          "Fair": 0.58,
+          "Marginal": 0.46,
+          "Poor": 0.02
+        }
+      }
+    },
+    "by_waterbody_type": {
+      "Bay": {
+        "n": 45997,
+        "mean": 96.51,
+        "median": 100.0,
+        "std": 4.62
+      },
+      "Canal": {
+        "n": 28574,
+        "mean": 86.53,
+        "median": 89.63,
+        "std": 13.48
+      },
+      "Coastal": {
+        "n": 2819,
+        "mean": 93.7,
+        "median": 100.0,
+        "std": 16.15
+      },
+      "Drainage": {
+        "n": 10205,
+        "mean": 73.94,
+        "median": 74.34,
+        "std": 16.82
+      },
+      "Effluent": {
+        "n": 601550,
+        "mean": 66.56,
+        "median": 67.59,
+        "std": 19.11
+      },
+      "Estuarine": {
+        "n": 49375,
+        "mean": 85.12,
+        "median": 89.63,
+        "std": 12.6
+      },
+      "Lake": {
+        "n": 153603,
+        "mean": 97.11,
+        "median": 100.0,
+        "std": 7.75
+      },
+      "Marine": {
+        "n": 23162,
+        "mean": 97.09,
+        "median": 100.0,
+        "std": 4.31
+      },
+      "River": {
+        "n": 1852579,
+        "mean": 90.03,
+        "median": 93.0,
+        "std": 12.97
+      },
+      "Sea Water": {
+        "n": 32061,
+        "mean": 84.37,
+        "median": 89.63,
+        "std": 15.78
+      },
+      "Sewage": {
+        "n": 23777,
+        "mean": 53.66,
+        "median": 47.88,
+        "std": 13.76
+      },
+      "Transitional": {
+        "n": 4275,
+        "mean": 93.76,
+        "median": 100.0,
+        "std": 15.56
+      }
+    },
+    "by_era": {
+      "1940-1970": {
+        "n": 96867,
+        "mean": 98.55,
+        "median": 100.0,
+        "std": 4.55,
+        "pct_at_100": 86.1
+      },
+      "1970-1990": {
+        "n": 108816,
+        "mean": 97.44,
+        "median": 100.0,
+        "std": 6.61,
+        "pct_at_100": 78.32
+      },
+      "1990-2000": {
+        "n": 37406,
+        "mean": 99.18,
+        "median": 100.0,
+        "std": 3.28,
+        "pct_at_100": 91.23
+      },
+      "2000-2010": {
+        "n": 1306155,
+        "mean": 78.3,
+        "median": 86.13,
+        "std": 20.2,
+        "pct_at_100": 23.74
+      },
+      "2010-2015": {
+        "n": 574484,
+        "mean": 88.13,
+        "median": 90.8,
+        "std": 13.73,
+        "pct_at_100": 34.93
+      },
+      "2015-2020": {
+        "n": 451276,
+        "mean": 89.94,
+        "median": 92.9,
+        "std": 12.65,
+        "pct_at_100": 42.01
+      },
+      "2020-2024": {
+        "n": 252973,
+        "mean": 91.54,
+        "median": 93.15,
+        "std": 11.17,
+        "pct_at_100": 46.49
+      }
+    }
+  }
+}
