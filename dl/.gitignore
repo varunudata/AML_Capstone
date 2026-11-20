@@ -21,6 +21,7 @@ results/tuning/*
 data/processed/*.parquet
 data/processed/*.npz
 data/processed/*.joblib
+!data/processed/preprocessor.joblib
 !data/processed/.gitkeep
 
 # Logs and system files
