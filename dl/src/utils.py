@@ -1,7 +1,8 @@
 """
 Utility functions for DL Phase:
-- Seed management across Python, NumPy, PyTorch
+- Deterministic seed management across Python, NumPy, PyTorch
 - Configuration loader with fallback search paths
+- Robust workspace path resolution
 - Standardized logging
 """
 
@@ -18,6 +19,9 @@ try:
     TORCH_AVAILABLE = True
 except ImportError:
     TORCH_AVAILABLE = False
+
+DL_ROOT = Path(__file__).resolve().parent.parent
+REPO_ROOT = DL_ROOT.parent
 
 
 def get_logger(name: str = "DL_Phase") -> logging.Logger:
@@ -52,20 +56,36 @@ def seed_everything(seed: int = 42) -> None:
             torch.backends.cudnn.benchmark = False
 
 
+def resolve_path(path_str: str) -> Path:
+    """
+    Resolve a file path relative to DL_ROOT or REPO_ROOT without hardcoded absolute paths.
+    WHY: Enables seamless execution whether commands run from AML_Capstone/, dl/, or notebooks/.
+    """
+    p = Path(path_str)
+    if p.is_absolute() and p.exists():
+        return p
+    if (DL_ROOT / p).exists():
+        return DL_ROOT / p
+    if (REPO_ROOT / p).exists():
+        return REPO_ROOT / p
+    if p.exists():
+        return p.resolve()
+    return (DL_ROOT / p).resolve()
+
+
 def load_config(config_path: Optional[str] = None) -> Dict[str, Any]:
     """
     Load YAML configuration file.
     Resolves configuration file paths relative to current script, workspace, or explicit argument.
     """
-    if config_path is not None and Path(config_path).exists():
-        target_path = Path(config_path)
+    if config_path is not None:
+        target_path = resolve_path(config_path)
     else:
-        # Search sensible locations
         candidates = [
+            DL_ROOT / "configs" / "config.yaml",
+            REPO_ROOT / "configs" / "config.yaml",
             Path("configs/config.yaml"),
-            Path("dl/configs/config.yaml"),
-            Path(__file__).resolve().parent.parent / "configs" / "config.yaml",
-            Path(__file__).resolve().parent / "config.yaml"
+            Path("dl/configs/config.yaml")
         ]
         target_path = None
         for cand in candidates:
