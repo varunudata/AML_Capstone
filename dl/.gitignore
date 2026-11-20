@@ -1,0 +1,31 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# PyTorch checkpoints and large models (>50MB)
+*.pt
+*.pth
+*.bin
+*.onnx
+results/models/*
+!results/models/.gitkeep
+
+# Tuning trials and raw database files
+*.db
+*.sqlite3
+results/tuning/*
+!results/tuning/.gitkeep
+
+# Large datasets and caches
+data/processed/*.parquet
+data/processed/*.npz
+data/processed/*.joblib
+!data/processed/.gitkeep
+
+# Logs and system files
+*.log
+results/logs/*
+!results/logs/.gitkeep
+.DS_Store
+.ipynb_checkpoints/

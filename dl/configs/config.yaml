@@ -1,0 +1,113 @@
+# ==============================================================================
+# Configuration: Water Quality DL Extension
+# Shared project configuration across Phase 1 (M1), Phase 2 (M2), and Phase 3 (M3).
+# ==============================================================================
+
+# ------------------------------------------------------------------------------
+# Phase 1: Data Foundation & Preprocessing (Member 1)
+# ------------------------------------------------------------------------------
+data:
+  raw_path: "../data/raw/Combined_dataset.csv"
+  clean_parquet_path: "../data/processed/clean.parquet"
+  preprocessor_path: "data/processed/preprocessor.joblib"
+  split_indices_path: "data/processed/split_indices.json"
+  aml_split_path: "../data/processed/splits/site_held_out_split.npz"
+  
+  # Target definition (CCME continuous score in [31.3041, 100.0])
+  target_name: "CCME_Values"
+  class_target_name: "CCME_WQI"
+  
+  # Split Policy: exact reuse of AML Group-Stratified Site-Held-Out protocol
+  split_type: "group"               # "group" (site-held-out) | "time" | "random"
+  group_column: "Area"              # Station/site identifier (zero spatial leakage)
+  time_column: "Date"               # Timestamp
+  split_seed: 42
+  
+  # Subsampling budget for rapid, reproducible training/eval (matches AML Stage 6)
+  sample_sizes:
+    train: 250000
+    val: 50000
+    test: 50000
+  
+  # Leakage audit and feature quarantine
+  leakage_aware: false              # When true, component features in drop_features are excluded
+  drop_features: []                 # Populated during leakage audit ablation
+  
+  # Core 8 raw physical-chemical features
+  raw_features:
+    - "Ammonia (mg/l)"
+    - "Biochemical Oxygen Demand (mg/l)"
+    - "Dissolved Oxygen (mg/l)"
+    - "Orthophosphate (mg/l)"
+    - "pH (ph units)"
+    - "Temperature (cel)"
+    - "Nitrogen (mg/l)"
+    - "Nitrate (mg/l)"
+    
+  # Full 21 engineered features matching AML Feature Transformer
+  feature_list:
+    - "Ammonia (mg/l)"
+    - "Biochemical Oxygen Demand (mg/l)"
+    - "Dissolved Oxygen (mg/l)"
+    - "Orthophosphate (mg/l)"
+    - "pH (ph units)"
+    - "Temperature (cel)"
+    - "Nitrogen (mg/l)"
+    - "Nitrate (mg/l)"
+    - "log1p_ammonia"
+    - "log1p_biochemical"
+    - "log1p_orthophosphate"
+    - "log1p_nitrogen"
+    - "log1p_nitrate"
+    - "do_sat_ratio"
+    - "do_deficit"
+    - "log_np_ratio"
+    - "nitrate_to_n_ratio"
+    - "ph_dev_neutral"
+    - "ph_dist_buffer"
+    - "month_sin"
+    - "month_cos"
+
+# ------------------------------------------------------------------------------
+# Phase 1: AML Baselines (Member 1)
+# ------------------------------------------------------------------------------
+aml_baselines:
+  seed: 42
+  xgboost:
+    n_estimators: 400
+    early_stopping_rounds: 25
+    eval_metric: "rmse"
+    tuned_parameters:
+      max_depth: 4
+      learning_rate: 0.1623
+      subsample: 0.7035
+      colsample_bytree: 0.8650
+      min_child_weight: 4
+      reg_alpha: 0.1203
+      reg_lambda: 0.1538
+  random_forest:
+    n_estimators: 100
+    max_depth: 16
+    max_features: "sqrt"
+
+# ------------------------------------------------------------------------------
+# Phase 2: MLP Architecture & Training (Member 2) [Reserved for M2]
+# ------------------------------------------------------------------------------
+mlp:
+  hidden_dims: [128, 64, 32]
+  activation: "relu"
+  dropout: 0.1
+  batch_size: 256
+  learning_rate: 0.001
+  weight_decay: 0.0001
+  epochs: 50
+  early_stopping_patience: 10
+  seed: 42
+
+# ------------------------------------------------------------------------------
+# Phase 3: Evaluation & Diagnostics (Member 3) [Reserved for M3]
+# ------------------------------------------------------------------------------
+evaluation:
+  metrics: ["MAE", "RMSE", "R2"]
+  class_labels: ["Poor", "Marginal", "Fair", "Good", "Excellent"]
+  shap_sample_size: 500
