@@ -1,7 +1,10 @@
 import numpy as np
 import pytest
 
-from dl.src.calibration import conformal_radius, interval_metrics, quantile_check
+try:
+    from src.calibration import conformal_radius, interval_metrics, quantile_check
+except ImportError:
+    from DL.src.calibration import conformal_radius, interval_metrics, quantile_check
 
 
 def test_order_statistic_uses_only_validation_and_includes_infinite_case():

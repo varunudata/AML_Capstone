@@ -228,7 +228,8 @@ def run(output, *, metadata_path=None, aml_split=None, aml_model=None,
     )
     metadata = load_metadata(metadata_path, cfg, manifest, frames) if metadata_path else None
     fixed = read_json(DL_ROOT / "results/aml_baseline_metrics.json")
-    original = pd.read_csv(DL_ROOT.parent / "outputs/06_models_metrics.csv")
+    from .utils import resolve_path
+    original = pd.read_csv(resolve_path("outputs/06_models_metrics.csv"))
     frozen_names = ["4. Random Forest Regressor", "6. XGBoost (Boundary-Clipped [0, 100])"]
     recap = original.set_index("Model").loc[frozen_names].reset_index()
     write_table(recap.drop(columns=["Test RMSE 95% CI"]), output, "phase3_aml_stage6_recap")

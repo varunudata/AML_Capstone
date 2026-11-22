@@ -1,8 +1,12 @@
 import numpy as np
 import pytest
 
-from dl.src.compare import DL_ROOT
-from dl.src.explain import dl_permutation_importance, gradient_importance, load_preprocessor
+try:
+    from src.compare import DL_ROOT
+    from src.explain import dl_permutation_importance, gradient_importance, load_preprocessor
+except ImportError:
+    from DL.src.compare import DL_ROOT
+    from DL.src.explain import dl_permutation_importance, gradient_importance, load_preprocessor
 
 
 def test_frozen_preprocessor_loads_from_root():

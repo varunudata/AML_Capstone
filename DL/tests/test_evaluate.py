@@ -2,10 +2,16 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from dl.src.evaluate import (
-    PredictionKey, align_predictions, check_manifest_rows, classification_metrics,
-    load_predictions, probability_metrics, regression_metrics,
-)
+try:
+    from src.evaluate import (
+        PredictionKey, align_predictions, check_manifest_rows, classification_metrics,
+        load_predictions, probability_metrics, regression_metrics,
+    )
+except ImportError:
+    from DL.src.evaluate import (
+        PredictionKey, align_predictions, check_manifest_rows, classification_metrics,
+        load_predictions, probability_metrics, regression_metrics,
+    )
 
 
 def test_regression_matches_hand_calculations():

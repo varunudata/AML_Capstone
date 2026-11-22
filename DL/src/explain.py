@@ -14,7 +14,8 @@ from .evaluate import PredictionKey, check_manifest_rows, load_manifest, load_pr
 
 
 def frozen_aml_importance():
-    aml = read_json(DL_ROOT.parent / "outputs/06_models_results.json")
+    from .utils import resolve_path
+    aml = read_json(resolve_path("outputs/06_models_results.json"))
     return pd.DataFrame(aml["top_permutation_features"]).rename(
         columns={"importance": "AML_R2_drop"}
     )

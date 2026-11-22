@@ -1,7 +1,10 @@
 import numpy as np
 import pytest
 
-from dl.src.compare import archived_split_matches, paired_bootstrap
+try:
+    from src.compare import archived_split_matches, paired_bootstrap
+except ImportError:
+    from DL.src.compare import archived_split_matches, paired_bootstrap
 
 
 @pytest.mark.parametrize("groups", [None, ["a", "a", "b"]])

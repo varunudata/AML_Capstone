@@ -58,16 +58,24 @@ def seed_everything(seed: int = 42) -> None:
 
 def resolve_path(path_str: str) -> Path:
     """
-    Resolve a file path relative to DL_ROOT or REPO_ROOT without hardcoded absolute paths.
-    WHY: Enables seamless execution whether commands run from AML_Capstone/, dl/, or notebooks/.
+    Resolve a file path relative to DL_ROOT, REPO_ROOT, or REPO_ROOT/AML without hardcoded absolute paths.
+    WHY: Enables seamless execution whether commands run from AML_Capstone/, AML/, DL/, or notebooks/.
     """
     p = Path(path_str)
     if p.is_absolute() and p.exists():
         return p
     if (DL_ROOT / p).exists():
-        return DL_ROOT / p
+        return (DL_ROOT / p).resolve()
     if (REPO_ROOT / p).exists():
-        return REPO_ROOT / p
+        return (REPO_ROOT / p).resolve()
+    if (REPO_ROOT / "AML" / p).exists():
+        return (REPO_ROOT / "AML" / p).resolve()
+    # Handle '../data/...' when inside DL/ and data is at REPO_ROOT/data or REPO_ROOT/AML/data
+    stripped = str(path_str).lstrip("./")
+    if (REPO_ROOT / stripped).exists():
+        return (REPO_ROOT / stripped).resolve()
+    if (REPO_ROOT / "AML" / stripped).exists():
+        return (REPO_ROOT / "AML" / stripped).resolve()
     if p.exists():
         return p.resolve()
     return (DL_ROOT / p).resolve()

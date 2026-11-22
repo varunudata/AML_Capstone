@@ -59,8 +59,8 @@ def test_dl_leakaware_prediction_csv_contract(split: str):
         assert not df["y_pred"].isna().any()
 
 
-def test_phase2_tables_and_viva_notes_exist():
-    """Verify tuning, ablation, final summary tables, and viva notes exist."""
+def test_phase2_tables_and_ieee_report_exist():
+    """Verify tuning, ablation, final summary tables, and IEEE report artifacts exist."""
     tables_dir = DL_ROOT / "results" / "tables"
     for fname in [
         "sanity_suite_summary.json",
@@ -74,5 +74,7 @@ def test_phase2_tables_and_viva_notes_exist():
         fpath = tables_dir / fname
         assert fpath.exists(), f"Missing table artifact: {fpath}"
 
-    viva_path = DL_ROOT / "reports" / "viva_notes_phase2.md"
-    assert viva_path.exists(), "Missing viva_notes_phase2.md"
+    ieee_pdf = DL_ROOT / "reports" / "ieee_report" / "DL_IEEE_Report.pdf"
+    assert ieee_pdf.exists(), "Missing DL_IEEE_Report.pdf"
+    lit_rev = DL_ROOT / "reports" / "literature_review_dl.md"
+    assert lit_rev.exists(), "Missing literature_review_dl.md"

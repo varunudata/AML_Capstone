@@ -49,7 +49,8 @@ dl/
 │   ├── figures/                        # High-resolution benchmark figures
 │   └── tables/                         # Formatted markdown / LaTeX tables
 ├── reports/
-│   └── viva_notes_phase1.md            # Technical viva examination Q&A (M1)
+│   ├── ieee_report/                    # Two-column IEEE Transactions report (PDF + LaTeX)
+│   └── literature_review_dl.md         # Deep Learning & Tabular ML literature review
 ├── tests/
 │   ├── test_data.py                    # Unit tests for data contract, leakage, and preprocessor
 │   ├── test_mock.py                    # Unit tests for mock data contract
@@ -124,11 +125,8 @@ PYTHONPATH=dl pytest dl/tests/ -v
 
 Execute Notebook 01:
 ```bash
-jupyter notebook dl/notebooks/01_data_and_aml_bridge.ipynb
+jupyter notebook DL/notebooks/01_data_and_aml_bridge.ipynb
 ```
-
-Review Viva Defense Preparation:
-- [`dl/reports/viva_notes_phase1.md`](file:///Users/musthyalasadhvik/Desktop/projects/aml-capstone/AML_Capstone/dl/reports/viva_notes_phase1.md)
 
 ---
 
@@ -170,12 +168,12 @@ Evaluated across 5 random seeds (`[42, 43, 44, 45, 46]`) on $50,000$ unseen spat
   - `dl_mlp_leakaware_seed42_{val,test}.csv` (and alias `dl_mlp_leakage_aware_seed42_{val,test}.csv`)
 - **Checkpoints & Configs (`results/models/`):** Regenerated via `python dl/src/uncertainty.py` (`.pt` files excluded from git via `.gitignore`, companion `*_config.json` saved alongside).
 - **Tables & Figures:** `results/tables/phase2_final_summary.csv`, `results/tables/ablation_results.md`, `results/figures/mlp_baseline_learning_curves.png`, `results/figures/mlp_uncertainty_calibration.png`.
-- **Notebook & Viva Defense:** `dl/notebooks/02_mlp_training.ipynb` and `dl/reports/viva_notes_phase2.md`.
+- **Notebook:** `DL/notebooks/02_mlp_training.ipynb`.
 
 ## Phase 3 / Final report
 
 - [Final IEEE Report (PDF)](reports/ieee_report/DL_IEEE_Report.pdf) · [IEEE LaTeX Source (`main.tex`)](reports/ieee_report/main.tex) · [DL Literature Review](reports/literature_review_dl.md)
-- [Comparison notebook](notebooks/03_comparison_report.ipynb) · [Viva notes](reports/viva_notes_phase3.md)
+- [Comparison notebook](notebooks/03_comparison_report.ipynb)
 - [Test comparison](results/tables/phase3_comparison.md) · [Site-block bootstrap](results/tables/phase3_paired_bootstrap.md) · [Interval coverage](results/tables/phase3_intervals.md)
 
 The full reproduction uses the team's `Member3_Required_Artifacts.zip` as a read-only input. Extract it outside the clone. The required files are `data/processed/clean.parquet`, `data/processed/splits/site_held_out_split.npz`, `models/xgboost_production_model.joblib` (artifact size only), and `dl/results/models/dl_mlp_seed42.pt`. The repository supplies the frozen prediction CSVs, preprocessor, manifest and AML metrics.
