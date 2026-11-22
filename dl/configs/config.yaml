@@ -130,3 +130,5 @@ evaluation:
   metrics: ["MAE", "RMSE", "R2"]
   class_labels: ["Poor", "Marginal", "Fair", "Good", "Excellent"]
   shap_sample_size: 500
+  seed: 42
+  bootstrap_draws: 1000

@@ -72,7 +72,7 @@ def load_manifest(path: Path) -> dict:
 
 
 def check_manifest_rows(frame: pd.DataFrame, manifest: dict, split: str) -> None:
-    expected = pd.Index([str(row) for row in manifest[f"{split}_sample_idx"]])
+    expected = pd.Index([str(row) for row in manifest[f"{split}_sample_idx"]], dtype=frame.index.dtype)
     if not frame.index.equals(expected):
         raise ValueError(f"Reference predictions differ from ordered {split} manifest")
 
