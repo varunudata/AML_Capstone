@@ -1,0 +1,3 @@
+Model,Val R²,Val RMSE,Val MAE,Test R²,Test RMSE,Test MAE
+4. Random Forest Regressor,0.9991,0.4099,0.1278,0.9993,0.331,0.0955
+"6. XGBoost (Boundary-Clipped [0, 100])",0.9988,0.4659,0.1303,0.9992,0.3496,0.1012

@@ -1,0 +1,11 @@
+feature,AML_R2_drop
+Orthophosphate (mg/l),1.38119
+Ammonia (mg/l),0.11497
+Biochemical Oxygen Demand (mg/l),0.04964
+pH (ph units),0.0094
+log1p_orthophosphate,0.00853
+Dissolved Oxygen (mg/l),0.00239
+Nitrogen (mg/l),0.00138
+log1p_ammonia,0.00064
+Temperature (cel),0.00055
+ph_dev_neutral,0.00042

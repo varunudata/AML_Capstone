@@ -1,0 +1,8 @@
+model,parameters,train_seconds,test_inference_seconds
+aml_xgboost,,,
+aml_random_forest,,,
+dl_mlp,13633,13.07,0.0095
+dl_mlp_mcdropout,13633,13.07,1.924
+dl_mlp_ensemble,68165,65.36,0.0474
+dl_mlp_quantile,13699,12.67,0.0064
+dl_mlp_leakaware,13121,8.4,0.0076

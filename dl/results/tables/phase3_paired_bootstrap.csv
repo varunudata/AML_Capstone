@@ -1,0 +1,5 @@
+model,reference,unit,delta_rmse,ci_low,ci_high
+dl_mlp,aml_xgboost,row (exploratory),0.2044828,0.18560157,0.22492003
+dl_mlp_mcdropout,aml_xgboost,row (exploratory),0.23849346,0.21941464,0.25852842
+dl_mlp_ensemble,aml_xgboost,row (exploratory),0.1719392,0.15283489,0.19264149
+dl_mlp_quantile,aml_xgboost,row (exploratory),0.24869035,0.23013915,0.26914676

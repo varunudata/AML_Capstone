@@ -1,0 +1,10 @@
+{
+  "original_aml_indices_verified": false,
+  "metadata_available": false,
+  "bootstrap_unit": "row (exploratory)",
+  "manifest_counts": {
+    "train": 250000,
+    "val": 50000,
+    "test": 50000
+  }
+}
