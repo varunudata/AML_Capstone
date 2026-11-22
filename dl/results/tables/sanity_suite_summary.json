@@ -1,0 +1,65 @@
+{
+  "tiny_batch_overfit": {
+    "batch_size": 32,
+    "steps": 300,
+    "initial_mse_loss": 177.2088,
+    "final_mse_loss": 0.0,
+    "final_rmse": 0.0,
+    "final_r2": 1.0
+  },
+  "shuffled_target_test": {
+    "val_R2": 0.0281,
+    "val_RMSE": 13.2387,
+    "test_R2": 0.0129,
+    "test_RMSE": 12.6507,
+    "test_MAE": 9.7501
+  },
+  "trivial_baselines": {
+    "mean_predictor": {
+      "val": {
+        "MAE": 9.7768,
+        "RMSE": 13.4321,
+        "R2": -0.0005,
+        "Macro_F1": 0.1204
+      },
+      "test": {
+        "MAE": 9.9822,
+        "RMSE": 12.8823,
+        "R2": -0.0235,
+        "Macro_F1": 0.101
+      }
+    },
+    "ridge_regression": {
+      "val": {
+        "MAE": 2.1839,
+        "RMSE": 3.4764,
+        "R2": 0.933,
+        "Macro_F1": 0.7795
+      },
+      "test": {
+        "MAE": 2.2614,
+        "RMSE": 3.288,
+        "R2": 0.9333,
+        "Macro_F1": 0.7894
+      }
+    }
+  },
+  "initial_mlp_run": {
+    "n_parameters": 13633,
+    "best_epoch": 49,
+    "train_time_sec": 35.7916,
+    "val_metrics": {
+      "MAE": 0.3354,
+      "RMSE": 0.7404,
+      "R2": 0.997,
+      "Macro_F1": 0.9524
+    },
+    "test_metrics": {
+      "MAE": 0.2645,
+      "RMSE": 0.6446,
+      "R2": 0.9974,
+      "Macro_F1": 0.9467
+    },
+    "learning_curves_figure": "/Users/varunudata/iCloud Drive (Archive)/Documents/computer science and AI/AML_Project/AML_Capstone/dl/results/figures/mlp_baseline_learning_curves.png"
+  }
+}

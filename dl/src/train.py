@@ -13,9 +13,16 @@ Implements Task B:
 
 import copy
 import json
+import sys
 import time
 from pathlib import Path
 from typing import Dict, Any, Optional, Tuple, List, Union
+
+# Ensure dl/ is at the front of sys.path so joblib unpickling of src.data.WaterQualityPreprocessor
+# works seamlessly whether invoked from repo root or dl/ directory.
+_DL_ROOT_STR = str(Path(__file__).resolve().parent.parent)
+if _DL_ROOT_STR not in sys.path:
+    sys.path.insert(0, _DL_ROOT_STR)
 
 import numpy as np
 import pandas as pd
@@ -312,6 +319,19 @@ class MLPTrainer:
         self.best_epoch = 0
         self.history = []
 
+        # WHY: Initialize regression head bias to the training fold target mean (~88.5)
+        # if it is currently zero. This starts the network at the trivial mean predictor
+        # instead of 0.0, avoiding 15+ wasted epochs climbing from 0 to 88.5 under Huber loss.
+        if isinstance(train_loader.dataset, TensorDataset) and len(train_loader.dataset.tensors) >= 2:
+            y_tr_tensor = train_loader.dataset.tensors[1]
+            if self.model.reg_head.bias is not None and torch.allclose(
+                self.model.reg_head.bias.detach().cpu(),
+                torch.zeros_like(self.model.reg_head.bias.detach().cpu()),
+            ):
+                train_mean_val = float(y_tr_tensor.float().mean().item())
+                with torch.no_grad():
+                    self.model.reg_head.bias.fill_(train_mean_val)
+
         for epoch in range(1, self.epochs + 1):
             train_loss = self.train_epoch(train_loader)
             val_loss, val_metrics, _, _, _ = self.evaluate(val_loader)
@@ -553,16 +573,286 @@ def train_single_seed(
     return model, summary
 
 
-if __name__ == "__main__":
-    cfg_loaded = load_config()
-    _, run_summary = train_single_seed(
-        cfg_loaded,
-        seed=cfg_loaded.get("mlp", {}).get("seed", 42),
-        variant="mlp",
-        mock=False,
+def overfit_tiny_batch(
+    cfg: Dict[str, Any],
+    batch_size: int = 32,
+    steps: int = 300,
+    lr: float = 1e-2,
+    mock: bool = False,
+) -> Dict[str, float]:
+    """
+    Sanity Check 1 (Task C): Overfit a single 32-sample mini-batch to near-zero loss.
+    WHY: Verifies gradient flow, weight updates, and representation capacity before full training.
+    """
+    seed_everything(42)
+    splits = load_splits(cfg, scaled=True, mock=mock)
+    bx = torch.from_numpy(splits["X_train"][:batch_size])
+    by = torch.from_numpy(splits["y_train"][:batch_size])
+
+    model = WaterQualityMLP(
+        input_dim=bx.shape[1],
+        hidden_dims=[128, 64],
+        activation="relu",
+        dropout=0.0,
+        batch_norm=False,
+    )
+    with torch.no_grad():
+        model.reg_head.bias.fill_(float(by.mean().item()))
+
+    optimizer = torch.optim.AdamW(model.parameters(), lr=lr, weight_decay=0.0)
+    loss_fn = nn.MSELoss()
+
+    model.train()
+    initial_loss = float(loss_fn(model(bx), by).item())
+    final_loss = initial_loss
+
+    for _ in range(steps):
+        optimizer.zero_grad(set_to_none=True)
+        preds = model(bx)
+        loss = loss_fn(preds, by)
+        loss.backward()
+        optimizer.step()
+        final_loss = float(loss.item())
+
+    model.eval()
+    with torch.no_grad():
+        final_preds = model(bx).numpy()
+    r2 = float(r2_score(by.numpy(), final_preds))
+    rmse = float(np.sqrt(mean_squared_error(by.numpy(), final_preds)))
+
+    return {
+        "batch_size": batch_size,
+        "steps": steps,
+        "initial_mse_loss": round(initial_loss, 5),
+        "final_mse_loss": round(final_loss, 5),
+        "final_rmse": round(rmse, 5),
+        "final_r2": round(r2, 5),
+    }
+
+
+def run_shuffled_target_test(
+    cfg: Dict[str, Any],
+    epochs: int = 8,
+    subsample_n: int = 10000,
+    mock: bool = False,
+) -> Dict[str, float]:
+    """
+    Sanity Check 2 (Task C): Shuffled-target permutation test.
+    WHY: When training targets y_train are randomly shuffled, any legitimate model MUST achieve
+    R2 ~ 0.0 on the unshuffled test set. Positive test R2 would indicate feature-target leakage.
+    """
+    seed_everything(42)
+    splits = load_splits(cfg, scaled=True, mock=mock)
+    rng = np.random.RandomState(42)
+
+    n_tr = min(len(splits["X_train"]), subsample_n)
+    x_tr = splits["X_train"][:n_tr]
+    y_tr_shuffled = rng.permutation(splits["y_train"][:n_tr]).copy()
+
+    x_val = splits["X_val"]
+    y_val = splits["y_val"]
+    x_test = splits["X_test"]
+    y_test = splits["y_test"]
+
+    train_loader = DataLoader(
+        TensorDataset(torch.from_numpy(x_tr), torch.from_numpy(y_tr_shuffled)),
+        batch_size=256,
+        shuffle=True,
+    )
+    val_loader = DataLoader(
+        TensorDataset(torch.from_numpy(x_val), torch.from_numpy(y_val)),
+        batch_size=512,
+        shuffle=False,
+    )
+    test_loader = DataLoader(
+        TensorDataset(torch.from_numpy(x_test), torch.from_numpy(y_test)),
+        batch_size=512,
+        shuffle=False,
+    )
+
+    cfg_shuf = copy.deepcopy(cfg)
+    cfg_shuf.setdefault("mlp", {})["epochs"] = epochs
+    cfg_shuf["mlp"]["early_stopping_patience"] = epochs
+
+    model = build_mlp_from_config(cfg_shuf, input_dim=x_tr.shape[1])
+    trainer = MLPTrainer(model=model, cfg=cfg_shuf, run_name="sanity_shuffled_target")
+    trainer.fit(train_loader, val_loader, save_checkpoint=False, verbose=False)
+
+    _, val_m, _, _, _ = trainer.evaluate(val_loader)
+    _, test_m, _, _, _ = trainer.evaluate(test_loader)
+
+    return {
+        "val_R2": val_m["R2"],
+        "val_RMSE": val_m["RMSE"],
+        "test_R2": test_m["R2"],
+        "test_RMSE": test_m["RMSE"],
+        "test_MAE": test_m["MAE"],
+    }
+
+
+def compute_trivial_baselines(
+    cfg: Dict[str, Any],
+    mock: bool = False,
+) -> Dict[str, Dict[str, Dict[str, float]]]:
+    """
+    Sanity Check 3 (Task C): Trivial baselines (Mean Predictor and Ridge Regression)
+    evaluated on the exact scaled train/val/test splits for reference context.
+    """
+    from sklearn.linear_model import Ridge
+
+    splits = load_splits(cfg, scaled=True, mock=mock)
+    x_tr, y_tr = splits["X_train"], splits["y_train"]
+    x_val, y_val = splits["X_val"], splits["y_val"]
+    x_test, y_test = splits["X_test"], splits["y_test"]
+
+    # 1. Train-Mean Predictor
+    y_mean = float(np.mean(y_tr))
+    mean_val_preds = np.full_like(y_val, fill_value=y_mean)
+    mean_test_preds = np.full_like(y_test, fill_value=y_mean)
+
+    # 2. Ridge Regression (L2 linear baseline)
+    ridge = Ridge(alpha=1.0, random_state=42)
+    ridge.fit(x_tr, y_tr)
+    ridge_val_preds = np.clip(ridge.predict(x_val), 0.0, 100.0)
+    ridge_test_preds = np.clip(ridge.predict(x_test), 0.0, 100.0)
+
+    return {
+        "mean_predictor": {
+            "val": compute_regression_metrics(y_val, mean_val_preds),
+            "test": compute_regression_metrics(y_test, mean_test_preds),
+        },
+        "ridge_regression": {
+            "val": compute_regression_metrics(y_val, ridge_val_preds),
+            "test": compute_regression_metrics(y_test, ridge_test_preds),
+        },
+    }
+
+
+def plot_learning_curves(
+    history: List[Dict[str, float]],
+    out_path: Optional[Union[str, Path]] = None,
+    title: str = "Baseline WaterQualityMLP Learning Curves",
+) -> Path:
+    """Plot and save epoch-by-epoch training/validation loss and validation RMSE curves."""
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+
+    if out_path is None:
+        out_path = DL_ROOT / "results" / "figures" / "mlp_baseline_learning_curves.png"
+    out_path = Path(out_path)
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+
+    epochs = [h["epoch"] for h in history]
+    train_loss = [h["train_loss"] for h in history]
+    val_loss = [h["val_loss"] for h in history]
+    val_rmse = [h["val_rmse"] for h in history]
+    val_mae = [h["val_mae"] for h in history]
+
+    fig, axes = plt.subplots(1, 2, figsize=(12, 4.5), dpi=160)
+
+    axes[0].plot(epochs, train_loss, label="Train Loss (Huber)", color="#1F6FD1", linewidth=2)
+    axes[0].plot(epochs, val_loss, label="Val Loss (Huber)", color="#E05A47", linewidth=2, linestyle="--")
+    axes[0].set_title(f"{title} — Loss")
+    axes[0].set_xlabel("Epoch")
+    axes[0].set_ylabel("Huber Loss")
+    axes[0].grid(True, alpha=0.3)
+    axes[0].legend()
+
+    axes[1].plot(epochs, val_rmse, label="Val RMSE", color="#1F6FD1", linewidth=2)
+    axes[1].plot(epochs, val_mae, label="Val MAE", color="#2E9CCA", linewidth=2, linestyle="-.")
+    best_idx = int(np.argmin(val_rmse))
+    axes[1].scatter(
+        [epochs[best_idx]],
+        [val_rmse[best_idx]],
+        color="#D9381E",
+        zorder=5,
+        label=f"Best Val RMSE ({val_rmse[best_idx]:.4f} @ Ep {epochs[best_idx]})",
+    )
+    axes[1].set_title(f"{title} — Validation Error")
+    axes[1].set_xlabel("Epoch")
+    axes[1].set_ylabel("Error (CCME WQI Units)")
+    axes[1].grid(True, alpha=0.3)
+    axes[1].legend()
+
+    fig.tight_layout()
+    fig.savefig(out_path, bbox_inches="tight")
+    plt.close(fig)
+    logger.info("Saved learning curves figure: %s", out_path)
+    return out_path
+
+
+def run_sanity_suite(
+    cfg: Optional[Dict[str, Any]] = None,
+    mock: bool = False,
+    save_artifacts: bool = True,
+) -> Dict[str, Any]:
+    """
+    Execute the complete Task C Sanity Suite BEFORE hyperparameter tuning:
+    1. Overfit a 32-sample batch to near-zero loss.
+    2. Shuffled-target permutation check (Test R2 ~ 0).
+    3. Trivial baselines (Mean predictor & Ridge regression).
+    4. First baseline MLP run + learning curve visualization.
+    """
+    if cfg is None:
+        cfg = load_config()
+
+    logger.info("1/4 Running 32-sample tiny-batch overfit check...")
+    overfit_res = overfit_tiny_batch(cfg, batch_size=32, steps=300, lr=1e-2, mock=mock)
+    logger.info("Tiny-batch overfit result: %s", overfit_res)
+
+    logger.info("2/4 Running shuffled-target leakage check...")
+    shuffled_res = run_shuffled_target_test(cfg, epochs=8, subsample_n=10000, mock=mock)
+    logger.info("Shuffled-target check result: %s", shuffled_res)
+
+    logger.info("3/4 Computing trivial baselines (Mean predictor, Ridge regression)...")
+    baselines_res = compute_trivial_baselines(cfg, mock=mock)
+    logger.info("Trivial baselines: %s", baselines_res)
+
+    logger.info("4/4 Running initial baseline MLP training + learning curves...")
+    _, mlp_summary = train_single_seed(
+        cfg,
+        seed=cfg.get("mlp", {}).get("seed", 42),
+        variant="mlp_initial",
+        mock=mock,
         export_csv=False,
-        save_checkpoint=True,
+        save_checkpoint=save_artifacts,
         verbose=True,
     )
-    logger.info("Completed single-seed MLP training: Val=%s | Test=%s",
-                run_summary["val_metrics"], run_summary["test_metrics"])
+
+    fig_path = None
+    if save_artifacts:
+        fig_path = str(
+            plot_learning_curves(
+                mlp_summary["history"],
+                out_path=DL_ROOT / "results" / "figures" / "mlp_baseline_learning_curves.png",
+            )
+        )
+
+    report = {
+        "tiny_batch_overfit": overfit_res,
+        "shuffled_target_test": shuffled_res,
+        "trivial_baselines": baselines_res,
+        "initial_mlp_run": {
+            "n_parameters": mlp_summary["n_parameters"],
+            "best_epoch": mlp_summary["best_epoch"],
+            "train_time_sec": mlp_summary["train_time_sec"],
+            "val_metrics": mlp_summary["val_metrics"],
+            "test_metrics": mlp_summary["test_metrics"],
+            "learning_curves_figure": fig_path,
+        },
+    }
+
+    if save_artifacts:
+        out_json = DL_ROOT / "results" / "tables" / "sanity_suite_summary.json"
+        out_json.parent.mkdir(parents=True, exist_ok=True)
+        with open(out_json, "w", encoding="utf-8") as f:
+            json.dump(report, f, indent=2)
+        logger.info("Saved sanity suite summary JSON: %s", out_json)
+
+    return report
+
+
+if __name__ == "__main__":
+    cfg_loaded = load_config()
+    run_sanity_suite(cfg_loaded, mock=False, save_artifacts=True)
