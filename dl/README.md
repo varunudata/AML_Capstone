@@ -10,7 +10,7 @@ This directory contains the Deep Learning (DL) half of the Water Quality Predict
 |---|---|---|---|
 | **Member 1** | **Data Foundation & AML Bridge** | `src/data.py`, `src/utils.py`, `src/aml_baselines.py`, `notebooks/01_data_and_aml_bridge.ipynb`, `configs/config.yaml` | **COMPLETE (Phase 1)** |
 | **Member 2** | **MLP Training & Uncertainty** | `src/models.py`, `src/train.py`, `src/tune.py`, `src/uncertainty.py`, `notebooks/02_mlp_training.ipynb` | **COMPLETE (Phase 2)** |
-| **Member 3** | **Evaluation & Comparison Report** | `src/evaluate.py`, `src/calibration.py`, `src/explain.py`, `notebooks/03_comparison_report.ipynb` | Ready for Handoff |
+| **Member 3** | **Evaluation & Comparison Report** | `src/evaluate.py`, `src/calibration.py`, `src/explain.py`, `notebooks/03_comparison_report.ipynb` | **COMPLETE (Phase 3)** |
 
 > **Contract Rule:** Each member edits ONLY their assigned files. Shared files (`config.yaml`, `requirements.txt`, `README.md`) are modified only within clearly designated member sections.
 
@@ -174,7 +174,7 @@ Evaluated across 5 random seeds (`[42, 43, 44, 45, 46]`) on $50,000$ unseen spat
 
 ## Phase 3 / Final report
 
-- [Final report (Markdown)](reports/DL_Report.md) · [PDF](reports/DL_Report.pdf)
+- [Final IEEE Report (PDF)](reports/ieee_report/DL_IEEE_Report.pdf) · [IEEE LaTeX Source (`main.tex`)](reports/ieee_report/main.tex) · [DL Literature Review](reports/literature_review_dl.md)
 - [Comparison notebook](notebooks/03_comparison_report.ipynb) · [Viva notes](reports/viva_notes_phase3.md)
 - [Test comparison](results/tables/phase3_comparison.md) · [Site-block bootstrap](results/tables/phase3_paired_bootstrap.md) · [Interval coverage](results/tables/phase3_intervals.md)
 

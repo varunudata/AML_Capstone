@@ -1,0 +1,214 @@
+\documentclass[journal,10pt,twocolumn]{IEEEtran}
+
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{graphicx}
+\usepackage{textcomp}
+\usepackage{xcolor}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{cite}
+\usepackage{url}
+\usepackage{balance}
+
+\begin{document}
+
+\title{Water Quality Prediction via Gradient Boosting and Deep Neural Networks: A Leakage-Safe Empirical Evaluation of Tabular Regularization, Uncertainty Calibration, and Attribution}
+
+\author{Mustyala~Sadhvik, Varun~Udata, and Team~Member~3%
+\thanks{Manuscript submitted November 2026 for the Combined Applied Machine Learning (AML) and Deep Learning (DL) Capstone Evaluation. M.~Sadhvik led Phase 1 (Data Foundation \& AML Bridge); V.~Udata led Phase 2 (MLP Architecture, Tuning \& Uncertainty); Member 3 led Phase 3 (Statistical Evaluation, Calibration \& Explainability).}}
+
+\markboth{Combined AML \& Deep Learning Capstone Technical Report, Phase 2, November 2026}%
+{Sadhvik, Udata et al.: Water Quality Prediction via Gradient Boosting and Deep Neural Networks}
+
+\maketitle
+
+\begin{abstract}
+Composite environmental indices such as the Canadian Council of Ministers of the Environment Water Quality Index (CCME WQI) summarize multi-parameter aquatic health on a $0\text{--}100$ scale, yet require complete synchronous chemical panels. Building upon a frozen Applied Machine Learning (AML) tree baseline (Tuned XGBoost and Random Forest), we design and evaluate a Deep Learning (DL) Multi-Layer Perceptron (MLP) framework on the exact zero-leakage site-held-out split ($250,000$ training, $50,000$ validation, and $50,000$ unseen test observations across $4,231$ held-out monitoring stations). To address the coordinate-aligned threshold bias of tabular water chemistry and severe $41.39\%$ right-censoring at $WQI = 100.0$, we engineer a compact $13,633$-parameter pyramidal MLP (`[128, 64, 32]`) incorporating Kaiming initialization, training-mean output bias centering, Batch Normalization, Dropout, Huber loss, and decoupled AdamW weight decay, tuned under an AML-matched 15-trial Optuna budget. A 20-configuration ablation study demonstrates that Batch Normalization cuts validation RMSE by $52.8\%$ ($1.7225 \to 0.8138$). To close the predictive uncertainty gap, we implement Monte Carlo (MC) Dropout ($T=50$ passes), a 5-Seed Deep Ensemble, and a 3-head Pinball Quantile Regression MLP ($q_{05}, q_{50}, q_{95}$) with non-crossing regularization. Across $1,000$ paired site-block bootstrap resamples, tree ensembles retain lower point error (Random Forest $\text{RMSE} = 0.3464$, XGBoost $\text{RMSE} = 0.3662$) than the best neural variant (5-Seed Deep Ensemble $\text{RMSE} = 0.5381, R^2 = 0.9982$, paired difference $+0.1719$, $95\%$ CI $[+0.1455, +0.2010]$). However, the 5-Seed Deep Ensemble achieves near-ideal $90.46\%$ empirical coverage on a nominal $90\%$ prediction interval with a sharp $1.056$-point mean width. GradientSHAP, permutation importance, and controlled leakage-aware ablations confirm that while trees split directly on raw nutrient thresholds, the MLP distributes attribution across log-transformed and stoichiometric features.
+\end{abstract}
+
+\begin{IEEEkeywords}
+CCME Water Quality Index, Multi-Layer Perceptron, XGBoost, Deep Ensembles, Monte Carlo Dropout, Quantile Regression, Conformal Calibration, Spatial Data Leakage, GradientSHAP.
+\end{IEEEkeywords}
+
+\section{Introduction}
+\IEEEPARstart{A}{mbient} surface water quality monitoring underpins ecosystem protection and regulatory compliance. The Canadian Council of Ministers of the Environment Water Quality Index (CCME WQI) synthesizes multi-parameter guideline excursions across Scope ($F_1$), Frequency ($F_2$), and Amplitude ($F_3$) into a continuous score in $[0, 100]$~\cite{ccme2001, lumb2006application}. Because deterministic calculation requires simultaneous measurement of all constituent chemical parameters, machine learning surrogates are increasingly deployed to predict WQI from routine physical-chemical sensors~\cite{palani2008ann, ahmed2019efficient, karim2025comprehensive}.
+
+In Phase 1 (AML), we established that standard random row splitting leaks $91.23\%$ of monitoring station identities (`Area`) between training and test partitions due to longitudinal repeat sampling~\cite{roberts2017cross, kaufman2012leakage}. Under a strict zero-leakage site-held-out split, boundary-clipped XGBoost~\cite{chen2016xgboost} and Random Forest~\cite{breiman2001random} achieved $R^2 \ge 0.9992$ ($\text{RMSE} \le 0.3662$).
+
+In Phase 2 (Deep Learning), we investigate a fundamental scientific question motivated by modern tabular deep learning literature~\cite{grinsztajn2022tree, gorishniy2021revisiting}: \textit{Can a compact, heavily regularized Multi-Layer Perceptron (MLP) trained under the exact same site-held-out split, feature representation, and 15-trial Optuna tuning budget match gradient-boosted trees on continuous WQI point prediction, and can neural uncertainty mechanisms (MC Dropout, Deep Ensembles, and Pinball Quantile Networks) provide well-calibrated $90\%$ predictive intervals?}
+
+\section{Deep Learning Literature Review}
+Recent empirical benchmarks by Grinsztajn et al.~\cite{grinsztajn2022tree} and Gorishniy et al.~\cite{gorishniy2021revisiting} demonstrate that tree ensembles outperform standard neural networks on heterogeneous tabular data due to two inductive biases: (1) decision trees construct axis-aligned orthogonal splits that naturally match regulatory step-thresholds (e.g., $\text{Orthophosphate} > 0.05\,\text{mg/L}$), whereas MLPs are rotationally invariant and biased toward overly smooth high-dimensional functions; and (2) unnormalized heavy-tailed features cause gradient instability in backpropagation.
+
+To stabilize tabular neural training, He et al.~\cite{he2015delving} derived variance-preserving Kaiming normal initialization for rectified networks, while Ioffe and Szegedy~\cite{ioffe2015batch} introduced Batch Normalization (`BatchNorm1d`) to attenuate internal covariate shift. Loshchilov and Hutter~\cite{loshchilov2019decoupled} demonstrated that decoupling $L_2$ weight decay from adaptive gradient second moments (`AdamW`) significantly improves generalization under cosine learning rate schedules. When targets exhibit heavy censoring ($41.39\%$ at $WQI=100.0$~\cite{tobin1958estimation}) and extreme pollution outliers, Huber loss~\cite{huber1964robust} bounds gradient magnitudes in the tails.
+
+Crucially, environmental decision-making requires calibrated uncertainty intervals rather than bare point estimates. Gal and Ghahramani~\cite{gal2016dropout} cast test-time dropout (`MC Dropout`) as approximate Bayesian variational inference. Lakshminarayanan et al.~\cite{lakshminarayanan2017simple} showed that training $M=5$ independent networks (`Deep Ensembles`) captures multi-modal epistemic uncertainty across distinct loss basins. Alternatively, Koenker and Bassett's Pinball quantile loss~\cite{koenker1978regression} paired with split-conformal calibration~\cite{romano2019conformalized, angelopoulos2021gentle} provides distribution-free coverage guarantees on asymmetric residuals.
+
+\section{Dataset, Split Fidelity, and Leak-Safe Preprocessing}
+\subsection{Frozen Spatial Split Reproduction}
+Operating on the cleaned ambient surface water cohort ($1,988,629$ observations, $\ge 1990$, industrial effluent and sewage excluded) from Karim et al.~\cite{karim2025comprehensive}, the DL pipeline reuses the exact site-held-out `GroupShuffleSplit` on monitoring station (`Area`, seed 42):
+\begin{itemize}
+    \item \textbf{Training Partition:} $N_{\text{train}} = 250,000$ observations.
+    \item \textbf{Validation Partition:} $N_{\text{val}} = 50,000$ observations.
+    \item \textbf{Test Partition:} $N_{\text{test}} = 50,000$ observations across $4,231$ unseen stations.
+\end{itemize}
+Station overlap across all three partitions is strictly $0\%$ ($\text{Train} \cap \text{Val} = \emptyset$, $\text{Train} \cap \text{Test} = \emptyset$, $\text{Val} \cap \text{Test} = \emptyset$).
+
+\subsection{Detection-Limit Parsing and Train-Only Scaling}
+The 21 input features comprise 8 raw physical-chemical measurements (Ammonia, Biochemical Oxygen Demand, Dissolved Oxygen, Orthophosphate, pH, Temperature, Total Nitrogen, Nitrate), 5 heavy-tail $\log(1+x)$ transforms, 6 limnological and stoichiometric interactions ($DO_{\text{sat}}$ ratio, $DO$ deficit, $\log(1+N/P)$ ratio, Nitrate-to-Nitrogen ratio, $|pH-7.0|$, regulatory buffer distance outside $[6.5, 8.5]$), and 2 cyclical month harmonics ($\sin, \cos$).
+
+Censored strings formatted as ``$<L$'' are parsed to half-detection-limit floats ($L/2$) with boolean indicator flags, and physically impossible sensor codes ($\text{pH} \notin [0,14]$, $\text{DO} \le 0$ or $>20\,\text{mg/L}$, $\text{Temperature} \notin [-2, 40]^\circ\text{C}$, negative nutrients) are converted to `NaN`. Both `SimpleImputer(strategy="median")` and `StandardScaler` are fitted \textbf{exclusively on the training fold} (`preprocessor.joblib`). Tree baselines consume unscaled imputed features (`scaled=False`), whereas all MLP variants consume standardized $\mathcal{N}(0, 1)$ features (`scaled=True`).
+
+\section{Theoretical Rigor and Architectural Formulation}
+\subsection{Regularized Pyramidal MLP Architecture}
+Let $x \in \mathbb{R}^{D}$ ($D=21$) denote a standardized input vector. An $L$-layer pyramidal MLP with hidden dimensions $[d_1, d_2, \dots, d_L]$ computes layer $l \in \{1, \dots, L\}$ via:
+\begin{equation}
+    z^{(l)} = W^{(l)} h^{(l-1)} + b^{(l)}, \quad \tilde{z}^{(l)} = \text{BN}(z^{(l)}), \quad h^{(l)} = \text{Drop}_{p}\!\left(\sigma(\tilde{z}^{(l)})\right)
+\end{equation}
+where $h^{(0)} = x$, $\sigma(\cdot) \in \{\text{ReLU}, \text{GELU}, \text{SiLU}\}$, and weights are initialized via Kaiming normal scaling $W_{ij}^{(l)} \sim \mathcal{N}(0, 2/d_{l-1})$~\cite{he2015delving}. To prevent 15+ wasted epochs shifting outputs from $0.0$ to the target scale $[31.30, 100.0]$, the regression head bias is initialized strictly to the training fold mean $b_{\text{out}}^{(0)} = \frac{1}{N_{\text{train}}}\sum_{i=1}^{N_{\text{train}}} y_i \approx 88.5$, starting the network at the trivial mean predictor ($R^2 = 0.0$) at step 0.
+
+\subsection{Huber Loss and Decoupled AdamW Optimization}
+To bound gradient sensitivity against rare pollution spikes and the $41.39\%$ upper-boundary point mass at $100.0$, the point MLP minimizes Huber loss~\cite{huber1964robust} ($\delta = 1.0$):
+\begin{equation}
+    \mathcal{L}_{\text{Huber}}(y, \hat{y}) = \begin{cases} \frac{1}{2}(y - \hat{y})^2, & \text{if } |y - \hat{y}| \le \delta \\ \delta\left(|y - \hat{y}| - \frac{1}{2}\delta\right), & \text{otherwise} \end{cases}
+\end{equation}
+Parameters $\theta$ are updated via `AdamW`~\cite{loshchilov2019decoupled} with decoupled weight decay $\lambda$ and global gradient norm clipping $\|\nabla_\theta \mathcal{L}\|_2 \le 1.0$:
+\begin{equation}
+    \theta_{t+1} = (1 - \eta_t \lambda)\theta_t - \eta_t \frac{\hat{m}_t}{\sqrt{\hat{v}_t} + \epsilon}
+\end{equation}
+where $\eta_t$ follows a cosine annealing schedule down to $10^{-6}$.
+
+\subsection{Three Predictive Uncertainty Formulations}
+\begin{enumerate}
+    \item \textbf{Monte Carlo Dropout ($T=50$ Passes):} Keeping `BatchNorm1d` layers frozen in `.eval()` mode while activating `nn.Dropout` layers in `.train()` mode, we draw $T=50$ stochastic predictions $\{\hat{y}^{(t)}(x)\}_{t=1}^{T}$ with predictive mean $\hat{\mu}_{\text{MC}}(x) = \frac{1}{T}\sum_{t=1}^T \hat{y}^{(t)}(x)$ and raw variance $\hat{\sigma}_{\text{MC}}^2(x) = \frac{1}{T-1}\sum_{t=1}^T (\hat{y}^{(t)}(x) - \hat{\mu}_{\text{MC}}(x))^2$.
+    \item \textbf{5-Seed Deep Ensemble ($M=5$):} Training $M=5$ independent networks (`seeds 42..46`) yields ensemble mean $\hat{\mu}_{\text{ens}}(x) = \frac{1}{M}\sum_{m=1}^M \hat{y}_m(x)$ and epistemic standard deviation $\hat{\sigma}_{\text{ens}}(x) = \sqrt{\frac{1}{M-1}\sum_{m=1}^M (\hat{y}_m(x) - \hat{\mu}_{\text{ens}}(x))^2}$. Using split-conformal residual calibration on the validation fold, we compute the 90th percentile normalized residual scaling factor $\alpha_{0.90} = \text{Quantile}_{0.90}\!\left(|y_{\text{val}} - \hat{\mu}(x_{\text{val}})| / \hat{\sigma}(x_{\text{val}})\right) / 1.64485$, yielding calibrated $90\%$ intervals $[\hat{q}_{05}, \hat{q}_{95}] = \text{clip}(\hat{\mu}(x) \pm 1.64485\,\alpha_{0.90}\hat{\sigma}(x), 0, 100)$.
+    \item \textbf{Multi-Quantile Pinball Network ($q_{05}, q_{50}, q_{95}$):} A 3-output head predicts $\hat{q}(x) = [\hat{q}_{0.05}, \hat{q}_{0.50}, \hat{q}_{0.95}]$ minimizing multi-quantile Pinball check loss~\cite{koenker1978regression} plus a differentiable non-crossing penalty ($\gamma = 0.5$):
+    \begin{equation}
+        \mathcal{L}_{\text{Quant}} = \sum_{\tau \in \{0.05, 0.50, 0.95\}} \!\!\max\!\big(\tau(y - \hat{q}_\tau), (\tau - 1)(y - \hat{q}_\tau)\big) + \gamma\sum_{k=1}^2 \text{ReLU}(\hat{q}_{\tau_k} - \hat{q}_{\tau_{k+1}})
+    \end{equation}
+\end{enumerate}
+
+\section{Pre-Tuning Sanity Suite and Ablation Study}
+\subsection{Four-Part Pre-Tuning Sanity Suite}
+Before executing hyperparameter optimization, four diagnostic checks verified pipeline integrity:
+\begin{enumerate}
+    \item \textbf{32-Sample Mini-Batch Overfit:} Driven from initial $\text{MSE} = 177.2088$ to $\text{MSE} = 0.0000$ ($R^2 = 1.0000$) in 300 steps.
+    \item \textbf{Shuffled-Target Permutation Check:} Permuting `y_train` collapsed test performance to $R^2 = 0.0129$ ($\text{RMSE} = 12.6507$), confirming zero feature-target leakage.
+    \item \textbf{Trivial Baselines:} Train-Mean Predictor achieved Test $\text{RMSE} = 12.8823$ ($R^2 = -0.0235$); Scaled Linear Ridge (21 features) achieved Test $\text{RMSE} = 3.2880$ ($R^2 = 0.9333$).
+    \item \textbf{Initial Baseline MLP (`[128, 64, 32]`):} Achieved Val $\text{RMSE} = 0.7404$ ($R^2 = 0.9970$) and Test $\text{RMSE} = 0.6446$ ($R^2 = 0.9974$).
+\end{enumerate}
+
+\begin{figure}[!t]
+\centering
+\includegraphics[width=\columnwidth]{../results/figures/mlp_baseline_learning_curves.png}
+\caption{Baseline WaterQualityMLP training and validation Huber loss curves (left) and validation RMSE/MAE convergence trajectory (right) over 50 epochs.}
+\label{fig:learning_curves}
+\end{figure}
+
+\subsection{Matched 15-Trial Optuna Search and 20-Run Ablation}
+Matching the frozen AML tuning budget (`15 Optuna trials`), we searched over depth ($1\text{--}4$ layers), width ($16\text{--}256$), activation, BatchNorm, dropout ($0.0\text{--}0.5$), learning rate, weight decay, and batch size strictly on validation RMSE. Table~\ref{tab:ablation_dl} reports representative configurations from our 20-run single-factor ablation study. Enabling `BatchNorm1d` yields the single largest improvement, reducing validation RMSE by $52.8\%$ ($1.7225 \to 0.8138$).
+
+\begin{table}[!t]
+\centering
+\caption{Representative Single-Factor MLP Architectural and Regularization Ablation on Validation Split ($N_{\text{val}} = 50,000$).}
+\label{tab:ablation_dl}
+\begin{tabular}{llcccc}
+\toprule
+\textbf{Ablated Factor} & \textbf{Configuration} & \textbf{Params} & \textbf{Val RMSE} & \textbf{Val MAE} & \textbf{Val $R^2$} \\
+\midrule
+Depth & 1 Layer `[128]` & 3,201 & 1.5438 & 1.0208 & 0.9868 \\
+Depth & 2 Layers `[128, 64]` & 11,521 & 1.1390 & 0.6021 & 0.9928 \\
+Depth & 3 Layers `[128, 64, 32]` & 13,633 & 0.9402 & 0.5595 & 0.9951 \\
+Depth & 4 Layers `[256, 128, 64, 32]` & 49,857 & 0.8891 & 0.4885 & 0.9956 \\
+\midrule
+Width & Narrow `[32, 16]` & 1,345 & 1.4926 & 1.0646 & 0.9876 \\
+Width & Wide `[256, 128, 64]` & 47,745 & 0.9253 & 0.4271 & 0.9953 \\
+\midrule
+BatchNorm & BatchNorm Off & 203,265 & 1.7225 & 1.2485 & 0.9835 \\
+\textbf{BatchNorm} & \textbf{BatchNorm On} & \textbf{205,313} & \textbf{0.8138} & \textbf{0.3233} & \textbf{0.9963} \\
+\midrule
+Dropout & $p = 0.0$ (No Dropout) & 205,313 & 0.7482 & 0.3056 & 0.9969 \\
+Dropout & $p = 0.1$ (Moderate) & 205,313 & 0.7844 & 0.3015 & 0.9966 \\
+Dropout & $p = 0.3$ (Heavy) & 205,313 & 0.8980 & 0.3644 & 0.9955 \\
+\midrule
+Loss Function & MSE Loss & 205,313 & 0.8108 & 0.3548 & 0.9964 \\
+\textbf{Loss Function} & \textbf{Huber Loss ($\delta=1.0$)} & \textbf{205,313} & \textbf{0.8138} & \textbf{0.3233} & \textbf{0.9963} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table*}[!t]
+\centering
+\caption{Side-by-Side Test Benchmark Comparing Frozen AML Baselines vs. 5-Seed Deep Learning Variants on 50,000 Unseen Spatial Test Observations (4,231 Unseen Monitoring Stations, 0\% Station Overlap).}
+\label{tab:main_comparison}
+\begin{tabular}{lcccccccc}
+\toprule
+\textbf{Model Family \& Variant} & \textbf{Runs} & \textbf{Params} & \textbf{Test MAE} & \textbf{Test RMSE} & \textbf{Test $R^2$} & \textbf{Macro-F1} & \textbf{90\% PICP} & \textbf{90\% MPIW} \\
+\midrule
+AML Linear Ridge (8 Raw Chemistry) & 1 & 9 & 6.6208 & 9.2884 & 0.4679 & 0.7241 & --- & --- \\
+AML Linear Ridge (21 Engineered) & 1 & 22 & 2.2614 & 3.2880 & 0.9333 & 0.7894 & --- & --- \\
+\textbf{AML Random Forest (100 Trees, Frozen)} & \textbf{1} & --- & \textbf{0.0964} & \textbf{0.3464} & \textbf{0.9993} & \textbf{0.9732} & --- & --- \\
+\textbf{AML Tuned XGBoost (Conformal Wrapper)} & \textbf{1} & --- & \textbf{0.1024} & \textbf{0.3662} & \textbf{0.9992} & \textbf{0.9660} & \textbf{92.20\%} & \textbf{0.466} \\
+\midrule
+DL Point MLP (`[128, 64, 32]`, ReLU+BN) & 5 & 13,633 & $0.2715 \pm 0.0266$ & $0.5707 \pm 0.0199$ & $0.9980 \pm 0.0001$ & $0.9512 \pm 0.0059$ & --- & --- \\
+DL MC Dropout ($T=50$ Stochastic Passes) & 5 & 13,633 & $0.2986 \pm 0.0219$ & $0.6047 \pm 0.0168$ & $0.9977 \pm 0.0001$ & $0.9478 \pm 0.0072$ & $98.61\% \pm 0.08\%$ & $2.633 \pm 0.079$ \\
+\textbf{DL 5-Seed Deep Ensemble (DL Champion)} & \textbf{1 (5x)} & \textbf{68,165} & \textbf{0.2528} & \textbf{0.5381} & \textbf{0.9982} & \textbf{0.9548} & \textbf{90.46\%} & \textbf{1.056} \\
+DL Pinball Quantile MLP ($q_{05}/q_{50}/q_{95}$) & 5 & 13,699 & $0.3137 \pm 0.0233$ & $0.6149 \pm 0.0386$ & $0.9977 \pm 0.0003$ & $0.9479 \pm 0.0083$ & $99.12\% \pm 0.12\%$ & $3.491 \pm 0.051$ \\
+\midrule
+AML XGBoost (Leakage-Aware, 17 Feats) & 1 & --- & 0.1216 & 0.3791 & 0.9991 & 0.9655 & --- & --- \\
+DL Point MLP (Leakage-Aware, 17 Feats) & 1 & 13,121 & 0.2803 & 0.7124 & 0.9969 & 0.9251 & --- & --- \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+\section{Empirical Results: AML vs. Deep Learning}
+\subsection{Point Prediction Accuracy and Paired Site-Block Bootstrap}
+Table~\ref{tab:main_comparison} presents the side-by-side evaluation across all model families on the $50,000$ unseen test rows. Among deep learning variants, the **5-Seed Deep Ensemble** achieves the best point accuracy ($\text{Test RMSE} = 0.5381, \text{MAE} = 0.2528, R^2 = 0.9982, \text{Macro-F1} = 0.9548$), outperforming single-seed Point MLPs ($\text{RMSE} = 0.5707 \pm 0.0199$) via ensemble variance reduction.
+
+Nevertheless, both frozen tree ensembles achieve lower point error than every neural variant: Random Forest reaches $\text{RMSE} = 0.3464$ and XGBoost reaches $\text{RMSE} = 0.3662$. Using a $1,000$-resample **paired site-block bootstrap** (drawing $4,231$ test monitoring stations with replacement and retaining all observations within each drawn station), the paired RMSE difference ($\text{Deep Ensemble} - \text{XGBoost}$) is **$+0.1719$ WQI points ($95\%$ CI: $[+0.1455, +0.2010]$)**. This empirically confirms Grinsztajn et al.'s hypothesis~\cite{grinsztajn2022tree}: axis-aligned recursive splits capture hard Canadian regulatory guideline cutoffs more sharply than smooth neural activations.
+
+\begin{figure}[!t]
+\centering
+\includegraphics[width=\columnwidth]{../results/figures/phase3_residuals.png}
+\caption{Test residual distributions across frozen AML tree baselines and Phase 2 Deep Learning variants.}
+\label{fig:residuals}
+\end{figure}
+
+\subsection{Predictive Uncertainty Calibration}
+Figure~\ref{fig:calibration} and Table~\ref{tab:main_comparison} evaluate nominal $90\%$ prediction intervals:
+\begin{itemize}
+    \item \textbf{5-Seed Deep Ensemble:} Achieves **$90.46\%$ empirical coverage (`PICP`)**—within $0.46$ percentage points of the exact $90.0\%$ nominal target—at a sharp mean width (`MPIW`) of $1.056$ WQI points ($2.43\%$ below $q_{05}$, $7.11\%$ above $q_{95}$).
+    \item \textbf{MC Dropout ($T=50$) \& Pinball Quantile MLP:} Achieve conservative coverage ($98.61\%$ and $99.12\%$) with wider intervals ($2.633$ and $3.491$ WQI points).
+    \item \textbf{Conformalized XGBoost Wrapper:} Applying the validation order-statistic radius to XGBoost achieves $92.20\%$ coverage with the narrowest interval width ($0.466$ points).
+\end{itemize}
+
+\begin{figure}[!t]
+\centering
+\includegraphics[width=\columnwidth]{../results/figures/phase3_calibration.png}
+\caption{Empirical interval coverage vs. mean interval width and quantile calibration curves across uncertainty methods.}
+\label{fig:calibration}
+\end{figure}
+
+\section{Explainability and Leakage-Aware Ablation}
+\subsection{TreeSHAP vs. Neural GradientSHAP and PDP/ICE}
+Comparing frozen AML permutation importance against neural `GradientSHAP` over $500$ test observations (Fig.~\ref{fig:mlp_shap}) reveals a fundamental representation difference: while XGBoost ranks raw `Orthophosphate (mg/l)` first, the MLP ranks `log1p_orthophosphate` first, followed by `log_np_ratio` and `log1p_ammonia`. Because correlated raw and log-transformed features share physical signal, neural weights distribute attribution across smooth logarithmic representations (yielding a Spearman rank correlation of $0.14$ across the top 10 raw/engineered feature names, while agreeing $100\%$ on the underlying physical driver: phosphorus-driven eutrophication).
+
+\begin{figure}[!t]
+\centering
+\includegraphics[width=\columnwidth]{../results/figures/phase3_mlp_shap.png}
+\caption{Mean absolute GradientSHAP attributions for the saved Point MLP (`seed 42`) across 500 unseen test observations.}
+\label{fig:mlp_shap}
+\end{figure}
+
+\subsection{Controlled Leakage-Aware Feature Ablation}
+When `leakage_aware=true` removes the four direct stoichiometric and regulatory buffer proxies (`do_deficit`, `log_np_ratio`, `nitrate_to_n_ratio`, `ph_dist_buffer`, reducing $D=21 \to 17$), XGBoost test RMSE increases by only $+0.0129$ ($0.3662 \to 0.3791$), whereas seed-matched MLP test RMSE increases by $+0.1654$ ($0.5470 \to 0.7124, R^2 = 0.9969$). Explicit domain feature engineering provides a much larger inductive boost to smooth neural networks than to axis-aligned tree ensembles.
+
+\section{Conclusion}
+We presented a rigorous, zero-leakage benchmark comparing frozen Gradient Boosted Decision Trees and Random Forests against regularized Multi-Layer Perceptrons and three neural uncertainty estimators on $50,000$ unseen monitoring station observations. Tree ensembles remain superior for tabular point accuracy ($\text{RMSE} = 0.3464\text{--}0.3662$ vs. $0.5381$ for the 5-Seed Deep Ensemble), whereas the 5-Seed Deep Ensemble provides exceptionally calibrated $90.46\%$ predictive interval coverage and smooth, differentiable response surfaces.
+
+\balance
+\bibliographystyle{IEEEtran}
+\bibliography{references}
+
+\end{document}
