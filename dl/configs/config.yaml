@@ -95,14 +95,33 @@ aml_baselines:
 # ------------------------------------------------------------------------------
 mlp:
   hidden_dims: [128, 64, 32]
-  activation: "relu"
+  activation: "gelu"
   dropout: 0.1
-  batch_size: 256
-  learning_rate: 0.001
+  batch_norm: true
+  batch_size: 512
+  learning_rate: 0.002
   weight_decay: 0.0001
+  loss_type: "huber"
+  huber_delta: 1.0
+  scheduler: "cosine"
+  max_grad_norm: 1.0
   epochs: 50
   early_stopping_patience: 10
+  clip_predictions: true
+  clip_min: 0.0
+  clip_max: 100.0
   seed: 42
+  seeds: [42, 43, 44, 45, 46]
+  enable_classification_head: false
+  num_classes: 5
+  tuning:
+    n_trials: 15               # Matched to AML Optuna budget (15 trials in aml_baseline_metrics.json)
+    tuning_epochs: 25
+    subsample_train: 60000     # Representative training subsample for Optuna search
+  uncertainty:
+    mc_dropout_passes: 50
+    ensemble_seeds: [42, 43, 44, 45, 46]
+    quantiles: [0.05, 0.50, 0.95]
 
 # ------------------------------------------------------------------------------
 # Phase 3: Evaluation & Diagnostics (Member 3) [Reserved for M3]
