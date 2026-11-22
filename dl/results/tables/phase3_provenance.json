@@ -1,7 +1,8 @@
 {
-  "original_aml_indices_verified": false,
-  "metadata_available": false,
-  "bootstrap_unit": "row (exploratory)",
+  "original_aml_indices_verified": true,
+  "metadata_available": true,
+  "bootstrap_unit": "Area",
+  "test_sites": 4231,
   "manifest_counts": {
     "train": 250000,
     "val": 50000,

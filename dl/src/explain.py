@@ -51,7 +51,7 @@ def clipped_model(checkpoint, n_features, cfg):
     model = build_mlp_from_config({"mlp": {**cfg["mlp"], **weights}}, n_features)
     model.load_state_dict(state["state_dict"])
     model.eval()
-    bounds = cfg["evaluation"]["wqi_bounds"]
+    bounds = [cfg["mlp"]["clip_min"], cfg["mlp"]["clip_max"]]
 
     class ClippedModel(torch.nn.Module):
         def __init__(self, inner):
@@ -170,7 +170,8 @@ def run_checkpoint(output, clean_data, checkpoint, cfg, manifest, aml):
     background = preprocessor.transform(
         raw.iloc[rng.choice(train_ids, min(shap_size, len(train_ids)), replace=False)], scaled=True
     )
-    explained = test[rng.choice(len(test), shap_size, replace=False)]
+    draw = rng.choice(len(test), shap_size, replace=False)
+    explained = test[draw]
     attribution = gradient_importance(model, explained, background, names, evaluation["seed"])
     permutation = dl_permutation_importance(model, test, actual, names, evaluation["seed"])
     importance = attribution.merge(permutation, on="feature", validate="one_to_one")
@@ -183,21 +184,18 @@ def run_checkpoint(output, clean_data, checkpoint, cfg, manifest, aml):
     agreement = spearmanr(matches.AML_R2_drop, matches.DL_R2_drop).statistic
     write_table(matches, output, "phase3_permutation_overlap")
     top = attribution.nlargest(3, "mean_abs_SHAP").feature.tolist()
-    # Add DO as a separate check when the learnt top three do not include it.
     dependence(model, explained, names, top, rng, preprocessor.scaler_.mean_,
                preprocessor.scaler_.scale_, output)
     do_name = "Dissolved Oxygen (mg/l)"
-    oxygen = names.index(do_name)
-    low, high = np.quantile(explained[:, oxygen], [.1, .9])
-    lower, higher = explained.copy(), explained.copy()
-    lower[:, oxygen], higher[:, oxygen] = low, high
+    raw_explained = test_rows.iloc[draw].copy()
+    oxygen, _, _ = preprocessor.clean_raw_series(raw_explained[do_name], do_name)
+    low, high = oxygen.quantile([.1, .9])
+    lower = preprocessor.transform(raw_explained.assign(**{do_name: float(low)}), scaled=True)
+    higher = preprocessor.transform(raw_explained.assign(**{do_name: float(high)}), scaled=True)
     return {"mlp_checkpoint_evaluated": True, "seed": seed, "shap_rows": shap_size,
             "permutation_rows": len(test), "common_importance_features": len(matches),
             "permutation_spearman": float(agreement) if np.isfinite(agreement) else None,
-            "do_low_mg_l": float(low * preprocessor.scaler_.scale_[oxygen]
-                                 + preprocessor.scaler_.mean_[oxygen]),
-            "do_high_mg_l": float(high * preprocessor.scaler_.scale_[oxygen]
-                                  + preprocessor.scaler_.mean_[oxygen]),
+            "do_low_mg_l": float(low), "do_high_mg_l": float(high),
             "do_shift_wqi": float(np.mean(predict(model, higher) - predict(model, lower)))}
 
 

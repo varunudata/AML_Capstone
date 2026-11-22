@@ -41,10 +41,12 @@ def leakage_comparison(output, frames, cfg):
     write_table(pd.DataFrame(rows), output, "phase3_leakage_ablation")
 
 
-def run(output, *, clean_data=None, aml_split=None, mlp_checkpoint=None):
+def run(output, *, clean_data=None, aml_split=None, aml_model=None, mlp_checkpoint=None):
     cfg = settings()
-    frames, manifest, status = compare.run(output, metadata_path=clean_data, aml_split=aml_split,
-                                          cfg=cfg)
+    frames, manifest, status = compare.run(
+        output, metadata_path=clean_data, aml_split=aml_split, aml_model=aml_model,
+        mlp_checkpoint=mlp_checkpoint, cfg=cfg
+    )
     calibration.run(output, frames, cfg)
     explain.run(output, clean_data=clean_data, checkpoint=mlp_checkpoint, cfg=cfg,
                 manifest=manifest)
@@ -54,13 +56,35 @@ def run(output, *, clean_data=None, aml_split=None, mlp_checkpoint=None):
 
 def add_arguments(parser):
     parser.add_argument("--output", type=Path, default=DL_ROOT / "results")
+    parser.add_argument("--artifact-root", type=Path, help="Root of the extracted project ZIP")
+    parser.add_argument("--aml-model", type=Path, help="Frozen XGBoost artifact for file size")
     parser.add_argument("--clean-data", type=Path, help="Frozen AML clean.parquet for sites/features")
     parser.add_argument("--aml-split", type=Path, help="Original site_held_out_split.npz to verify")
     parser.add_argument("--mlp-checkpoint", type=Path, help="Frozen seed-42 MLP .pt for explanation")
     return parser
 
 
+def artifact_paths(root=None, *, clean_data=None, aml_split=None, aml_model=None, mlp_checkpoint=None):
+    paths = {"clean_data": clean_data, "aml_split": aml_split, "aml_model": aml_model,
+             "mlp_checkpoint": mlp_checkpoint}
+    if root is not None:
+        relative = {"clean_data": "data/processed/clean.parquet",
+                    "aml_split": "data/processed/splits/site_held_out_split.npz",
+                    "aml_model": "models/xgboost_production_model.joblib",
+                    "mlp_checkpoint": "dl/results/models/dl_mlp_seed42.pt"}
+        for name, filename in relative.items():
+            paths[name] = paths[name] if paths[name] is not None else root / filename
+    missing = [str(path) for path in paths.values() if path is not None and not path.is_file()]
+    if missing:
+        raise FileNotFoundError("Missing frozen project artifacts: " + ", ".join(missing))
+    return paths
+
+
+def command_artifacts(args):
+    return artifact_paths(args.artifact_root, clean_data=args.clean_data, aml_split=args.aml_split,
+                          aml_model=args.aml_model, mlp_checkpoint=args.mlp_checkpoint)
+
+
 if __name__ == "__main__":
     args = add_arguments(argparse.ArgumentParser(description=__doc__)).parse_args()
-    run(args.output, clean_data=args.clean_data, aml_split=args.aml_split,
-        mlp_checkpoint=args.mlp_checkpoint)
+    run(args.output, **command_artifacts(args))

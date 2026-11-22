@@ -1,5 +1,5 @@
 model,reference,unit,delta_rmse,ci_low,ci_high
-dl_mlp,aml_xgboost,row (exploratory),0.2044828,0.18560157,0.22492003
-dl_mlp_mcdropout,aml_xgboost,row (exploratory),0.23849346,0.21941464,0.25852842
-dl_mlp_ensemble,aml_xgboost,row (exploratory),0.1719392,0.15283489,0.19264149
-dl_mlp_quantile,aml_xgboost,row (exploratory),0.24869035,0.23013915,0.26914676
+dl_mlp,aml_xgboost,Area,0.2044828,0.17685456,0.23512534
+dl_mlp_mcdropout,aml_xgboost,Area,0.23849346,0.21103404,0.27032604
+dl_mlp_ensemble,aml_xgboost,Area,0.1719392,0.1455449,0.20104877
+dl_mlp_quantile,aml_xgboost,Area,0.24869035,0.21911215,0.28222574

@@ -171,3 +171,23 @@ Evaluated across 5 random seeds (`[42, 43, 44, 45, 46]`) on $50,000$ unseen spat
 - **Checkpoints & Configs (`results/models/`):** Regenerated via `python dl/src/uncertainty.py` (`.pt` files excluded from git via `.gitignore`, companion `*_config.json` saved alongside).
 - **Tables & Figures:** `results/tables/phase2_final_summary.csv`, `results/tables/ablation_results.md`, `results/figures/mlp_baseline_learning_curves.png`, `results/figures/mlp_uncertainty_calibration.png`.
 - **Notebook & Viva Defense:** `dl/notebooks/02_mlp_training.ipynb` and `dl/reports/viva_notes_phase2.md`.
+
+## Phase 3 / Final report
+
+- [Final report (Markdown)](reports/DL_Report.md) · [PDF](reports/DL_Report.pdf)
+- [Comparison notebook](notebooks/03_comparison_report.ipynb) · [Viva notes](reports/viva_notes_phase3.md)
+- [Test comparison](results/tables/phase3_comparison.md) · [Site-block bootstrap](results/tables/phase3_paired_bootstrap.md) · [Interval coverage](results/tables/phase3_intervals.md)
+
+The full reproduction uses the team's `Member3_Required_Artifacts.zip` as a read-only input. Extract it outside the clone. The required files are `data/processed/clean.parquet`, `data/processed/splits/site_held_out_split.npz`, `models/xgboost_production_model.joblib` (artifact size only), and `dl/results/models/dl_mlp_seed42.pt`. The repository supplies the frozen prediction CSVs, preprocessor, manifest and AML metrics.
+
+From the repository root, using the shell that has the Python environment active:
+
+```bash
+python -m pip install -r dl/requirements.txt
+dl/run_all.sh --artifact-root /path/to/extracted/Member3_Required_Artifacts
+python -m pytest dl/tests/test_evaluate.py dl/tests/test_compare.py dl/tests/test_calibration.py dl/tests/test_explain.py -q
+```
+
+`run_all.sh` verifies the original AML split and reproduces the Phase 3 tables, figures and reports. It imports AML point metrics and uses the saved predictions for paired residuals and interval calibration. All model training and original Stage 6 evaluation stay frozen. The generated test-site table averages each model's per-seed metrics within site and records the number of runs. The PDF and plots may render slightly differently with different font libraries.
+
+To run the notebook with the same inputs, set `AML_CAPSTONE_ARTIFACTS` to the extracted folder before launching Jupyter. Notebook cells write generated files to a temporary directory. If only the Git checkout is available, `python -m dl.src.reporting --output /path/to/scratch` builds the export-based subset with exploratory row bootstrap. The complete verified results are committed with the report.

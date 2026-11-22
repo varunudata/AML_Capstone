@@ -1,3 +1,11 @@
 {
-  "mlp_checkpoint_evaluated": false
+  "mlp_checkpoint_evaluated": true,
+  "seed": 42,
+  "shap_rows": 500,
+  "permutation_rows": 4000,
+  "common_importance_features": 10,
+  "permutation_spearman": 0.13939393939393938,
+  "do_low_mg_l": 8.167000102996827,
+  "do_high_mg_l": 11.684103012084961,
+  "do_shift_wqi": -0.0028485413640737534
 }

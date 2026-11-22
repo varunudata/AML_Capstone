@@ -153,10 +153,17 @@ def save_figure(fig, output, name):
 
 
 def subgroup_rows(frame, model, seed, grouping, values):
-    scored = frame.assign(group=values)
-    for value, part in scored.groupby("group", observed=True, sort=True):
-        yield {"model": model, "seed": seed, "grouping": grouping, "group": str(value),
-               "n": len(part), **regression_metrics(part.y_true, part.y_pred)}
+    actual, pred = frame.y_true, frame.y_pred
+    error = pred - actual
+    group_mean = actual.groupby(values, observed=True).transform("mean")
+    scored = pd.DataFrame({"group": values, "ae": abs(error), "se": error**2,
+                           "st": (actual - group_mean)**2})
+    stats = scored.groupby("group", observed=True).agg(
+        n=("ae", "size"), MAE=("ae", "mean"), sse=("se", "sum"), sst=("st", "sum")
+    ).reset_index()
+    stats["RMSE"] = np.sqrt(stats.sse / stats.n)
+    stats["R2"] = 1 - stats.sse / stats.sst.where(stats.sst > 0)
+    return stats.drop(columns=["sse", "sst"]).assign(model=model, seed=seed, grouping=grouping)
 
 
 def subgroup_table(frames, metadata, cfg):
@@ -170,13 +177,13 @@ def subgroup_table(frames, metadata, cfg):
             values = pd.to_numeric(metadata[feature], errors="coerce")
             groups[feature] = pd.qcut(values, 4, duplicates="drop").astype("string")
         groups = {name: val.astype("string").fillna("Unavailable") for name, val in groups.items()}
-    return pd.DataFrame([
-        row
+    stats = pd.concat([
+        subgroup_rows(frame, model, seed, name, values)
         for model, models in frames.items()
         for seed, frame in models.items()
         for name, values in groups.items()
-        for row in subgroup_rows(frame, model, seed, name, values)
-    ])
+    ], ignore_index=True)
+    return stats[["model", "seed", "grouping", "group", "n", *METRICS]]
 
 
 def plot_residuals(frames, output, seed):
@@ -194,7 +201,7 @@ def plot_residuals(frames, output, seed):
     save_figure(fig, output, "phase3_residuals")
 
 
-def resources():
+def resources(aml_model=None, mlp_checkpoint=None):
     frozen = read_json(DL_ROOT / "results/tables/phase2_final_results.json")
     rows = [{"model": model} for model in AML_MODELS]
     for model, item in zip((*DL_MODELS, "dl_mlp_leakaware"), frozen["summary_table"], strict=True):
@@ -203,10 +210,15 @@ def resources():
         rows.append({"model": model, "parameters": item["Params"],
                      "train_seconds": item["Train_Time_s"],
                      "test_inference_seconds": item["Infer_Time_s"]})
+    if aml_model is not None:
+        rows[0]["checkpoint_bytes"] = aml_model.stat().st_size
+    if mlp_checkpoint is not None:
+        rows[len(AML_MODELS)]["checkpoint_bytes"] = mlp_checkpoint.stat().st_size
     return pd.DataFrame(rows)
 
 
-def run(output, *, metadata_path=None, aml_split=None, cfg=None):
+def run(output, *, metadata_path=None, aml_split=None, aml_model=None,
+        mlp_checkpoint=None, cfg=None):
     cfg = cfg if cfg is not None else settings()
     eval_cfg = cfg["evaluation"]
     manifest = load_manifest(DL_ROOT / cfg["data"]["split_indices_path"])
@@ -242,7 +254,7 @@ def run(output, *, metadata_path=None, aml_split=None, cfg=None):
             summary.append(record)
     write_table(pd.DataFrame(summary), output, "phase3_comparison")
     write_table(pd.DataFrame(per_seed), output, "phase3_dl_per_seed")
-    write_table(resources(), output, "phase3_resources")
+    write_table(resources(aml_model, mlp_checkpoint), output, "phase3_resources")
 
     tests = frames["test"]
     baseline = next(iter(tests[BOOST].values()))
@@ -256,13 +268,16 @@ def run(output, *, metadata_path=None, aml_split=None, cfg=None):
     ]
     write_table(pd.DataFrame(ci), output, "phase3_paired_bootstrap")
     subgroups = subgroup_table(tests, metadata, cfg)
-    # Keep the per-site breakdown compact without producing an enormous Markdown page.
     write_table(subgroups[subgroups.grouping != "Site"], output, "phase3_subgroups")
     if metadata is not None:
-        subgroups[subgroups.grouping == "Site"].to_csv(output / "tables/phase3_sites.csv", index=False)
+        sites = subgroups[subgroups.grouping == "Site"].groupby(["model", "group"], as_index=False)
+        sites = sites.agg(n=("n", "first"), runs=("seed", "size"),
+                          **{name: (name, "mean") for name in METRICS})
+        write_table(sites, output, "phase3_sites")
     plot_residuals(tests, output, eval_cfg["seed"])
     status = {"original_aml_indices_verified": archived_split, "metadata_available": metadata is not None,
-              "bootstrap_unit": units, "manifest_counts": {s: len(manifest[f"{s}_sample_idx"])
+              "bootstrap_unit": units, "test_sites": None if groups is None else groups.nunique(),
+              "manifest_counts": {s: len(manifest[f"{s}_sample_idx"])
                                                             for s in ("train", "val", "test")}}
     (output / "tables/phase3_provenance.json").write_text(json.dumps(status, indent=2) + "\n")
     return frames, manifest, status
