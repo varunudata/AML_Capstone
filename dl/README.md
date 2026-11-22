@@ -9,7 +9,7 @@ This directory contains the Deep Learning (DL) half of the Water Quality Predict
 | Member | Role | Assigned Files | Status |
 |---|---|---|---|
 | **Member 1** | **Data Foundation & AML Bridge** | `src/data.py`, `src/utils.py`, `src/aml_baselines.py`, `notebooks/01_data_and_aml_bridge.ipynb`, `configs/config.yaml` | **COMPLETE (Phase 1)** |
-| **Member 2** | **MLP Training & Uncertainty** | `src/models.py`, `src/train.py`, `src/tune.py`, `src/uncertainty.py`, `notebooks/02_mlp_training.ipynb` | Ready for Handoff |
+| **Member 2** | **MLP Training & Uncertainty** | `src/models.py`, `src/train.py`, `src/tune.py`, `src/uncertainty.py`, `notebooks/02_mlp_training.ipynb` | **COMPLETE (Phase 2)** |
 | **Member 3** | **Evaluation & Comparison Report** | `src/evaluate.py`, `src/calibration.py`, `src/explain.py`, `notebooks/03_comparison_report.ipynb` | Ready for Handoff |
 
 > **Contract Rule:** Each member edits ONLY their assigned files. Shared files (`config.yaml`, `requirements.txt`, `README.md`) are modified only within clearly designated member sections.
@@ -129,3 +129,45 @@ jupyter notebook dl/notebooks/01_data_and_aml_bridge.ipynb
 
 Review Viva Defense Preparation:
 - [`dl/reports/viva_notes_phase1.md`](file:///Users/musthyalasadhvik/Desktop/projects/aml-capstone/AML_Capstone/dl/reports/viva_notes_phase1.md)
+
+---
+
+## 🧠 Phase 2 Summary: Regularized MLP Challenger, Tuning & Calibrated Uncertainty (Member 2)
+
+### 1. Pre-Tuning Sanity Suite (`src/train.py`)
+- **32-Sample Mini-Batch Overfit:** Driven from initial $\text{MSE} = 177.21$ to $\text{MSE} = 0.0000$ ($R^2 = 1.0000$) in 300 steps.
+- **Shuffled-Target Permutation Check:** Randomly permuting `y_train` yields Test $R^2 = 0.0129$ ($\text{RMSE} = 12.65$), confirming zero feature-target leakage.
+- **Trivial Baselines on Exact Scaled Split:**
+  - Train-Mean Predictor: Test $\text{RMSE} = 12.8823$, $\text{MAE} = 9.9822$, $R^2 = -0.0235$.
+  - Scaled Ridge Regression (21 features): Test $\text{RMSE} = 3.2880$, $\text{MAE} = 2.2614$, $R^2 = 0.9333$.
+- **Initial Baseline MLP (`[128, 64, 32]`, 13,633 params):** Val $\text{RMSE} = 0.7404$ ($R^2 = 0.9970$), Test $\text{RMSE} = 0.6446$ ($R^2 = 0.9974$).
+
+### 2. Optuna Tuning (Matched 15-Trial AML Budget) & 20-Configuration Ablation (`src/tune.py`)
+- **Tuning Protocol:** 15 Optuna TPE trials optimizing **Validation RMSE exclusively** (test split strictly isolated).
+- **Key Architectural Ablation Findings (`results/tables/ablation_results.md`):**
+  - **BatchNorm Impact:** Enabling `BatchNorm1d` cuts validation RMSE in half from $1.7225 \to 0.8138$.
+  - **Depth Impact:** Scaling from 1 layer (`[128]`, Val $\text{RMSE} = 1.5438$) to 3–4 layers (`[128, 64, 32]`, Val $\text{RMSE} = 0.9402$; `[256, 128, 64, 32]`, Val $\text{RMSE} = 0.8891$) captures multi-parameter threshold curvature.
+  - **Loss Function:** Huber loss reduces validation MAE from $0.3548$ (MSE) to $0.3233$ by bounding gradient sensitivity to tail outliers and the 41.39% censored boundary at $100.0$.
+
+### 3. Final 5-Seed Evaluation & Uncertainty Results (`src/uncertainty.py`)
+
+Evaluated across 5 random seeds (`[42, 43, 44, 45, 46]`) on $50,000$ unseen spatial test observations ($0\%$ station overlap):
+
+| Variant | Seeds | Params | Train Time (s) | Infer Time (s) | Val RMSE | Val MAE | Val $R^2$ | Test RMSE | Test MAE | Test $R^2$ | Test Macro-F1 | 90% PICP Coverage | 90% MPIW Width |
+|:---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+| **`dl_mlp` (5-Seed Mean ± Std)** | 42..46 | 13,633 | 13.07 | 0.0095 | 0.6522 | 0.3080 | 0.9976 | **0.5707 ± 0.0199** | **0.2715** | **0.9980** | 0.9512 | — | — |
+| **`dl_mlp_mcdropout` ($T=50$ Passes)** | 42..46 | 13,633 | 13.07 | 1.9240 | 0.6873 | 0.3391 | 0.9974 | 0.6047 ± 0.0169 | 0.2986 | 0.9978 | 0.9478 | 0.9862 | 2.6331 |
+| **`dl_mlp_ensemble` (5-Seed Deep Ensemble)** | 42..46 | 68,165 | 65.36 | 0.0474 | **0.6180** | **0.2855** | **0.9979** | **0.5381** | **0.2528** | **0.9982** | **0.9548** | **0.9043** | **1.0560** |
+| **`dl_mlp_quantile` (Pinball $q_{05}/q_{50}/q_{95}$)** | 42..46 | 13,699 | 12.67 | 0.0064 | 0.6972 | 0.3539 | 0.9973 | 0.6148 ± 0.0386 | 0.3137 | 0.9976 | 0.9479 | 0.9912 | 3.4911 |
+| **`dl_mlp_leakaware` (17 Features Ablated)** | 42 | 13,121 | 8.40 | 0.0076 | 0.8119 | 0.3550 | 0.9963 | 0.7124 | 0.2803 | 0.9969 | 0.9251 | — | — |
+
+### 4. Exported Phase 2 Contract Artifacts for Member 3
+- **Prediction CSVs (`results/predictions/`):**
+  - `dl_mlp_seed{42..46}_{val,test}.csv`
+  - `dl_mlp_mcdropout_seed{42..46}_{val,test}.csv` (includes `y_std`, `q05`, `q95`)
+  - `dl_mlp_ensemble_seed{42..46}_{val,test}.csv` (includes `y_std`, `q05`, `q95`)
+  - `dl_mlp_quantile_seed{42..46}_{val,test}.csv` (includes `y_std`, `q05`, `q95`)
+  - `dl_mlp_leakaware_seed42_{val,test}.csv` (and alias `dl_mlp_leakage_aware_seed42_{val,test}.csv`)
+- **Checkpoints & Configs (`results/models/`):** Regenerated via `python dl/src/uncertainty.py` (`.pt` files excluded from git via `.gitignore`, companion `*_config.json` saved alongside).
+- **Tables & Figures:** `results/tables/phase2_final_summary.csv`, `results/tables/ablation_results.md`, `results/figures/mlp_baseline_learning_curves.png`, `results/figures/mlp_uncertainty_calibration.png`.
+- **Notebook & Viva Defense:** `dl/notebooks/02_mlp_training.ipynb` and `dl/reports/viva_notes_phase2.md`.

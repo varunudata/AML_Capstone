@@ -1,0 +1,944 @@
+{
+  "best_hyperparameters_used": {
+    "hidden_dims": [
+      128,
+      64,
+      32
+    ],
+    "activation": "relu",
+    "dropout": 0.1,
+    "batch_norm": true,
+    "batch_size": 1024,
+    "learning_rate": 0.003,
+    "weight_decay": 0.0001,
+    "loss_type": "huber",
+    "huber_delta": 1.0,
+    "scheduler": "cosine",
+    "max_grad_norm": 1.0,
+    "epochs": 30,
+    "early_stopping_patience": 8,
+    "clip_predictions": true,
+    "clip_min": 0.0,
+    "clip_max": 100.0,
+    "seed": 42,
+    "seeds": [
+      42,
+      43,
+      44,
+      45,
+      46
+    ],
+    "enable_classification_head": false,
+    "num_classes": 5,
+    "tuning": {
+      "n_trials": 15,
+      "tuning_epochs": 25,
+      "subsample_train": 60000
+    },
+    "uncertainty": {
+      "mc_dropout_passes": 50,
+      "ensemble_seeds": [
+        42,
+        43,
+        44,
+        45,
+        46
+      ],
+      "quantiles": [
+        0.05,
+        0.5,
+        0.95
+      ]
+    }
+  },
+  "summary_table": [
+    {
+      "Variant": "dl_mlp (5-Seed Mean \u00b1 Std)",
+      "Seeds": "[42, 43, 44, 45, 46]",
+      "Params": 13633,
+      "Train_Time_s": 13.07,
+      "Infer_Time_s": 0.0095,
+      "Val_RMSE": 0.6522,
+      "Val_MAE": 0.308,
+      "Val_R2": 0.9976,
+      "Test_RMSE": 0.5707,
+      "Test_RMSE_Std": 0.0199,
+      "Test_MAE": 0.2715,
+      "Test_R2": 0.998,
+      "Test_Macro_F1": 0.9512,
+      "Test_PICP_90": null,
+      "Test_MPIW_90": null
+    },
+    {
+      "Variant": "dl_mlp_mcdropout (T=50, 5-Seed Mean)",
+      "Seeds": "[42, 43, 44, 45, 46]",
+      "Params": 13633,
+      "Train_Time_s": 13.07,
+      "Infer_Time_s": 1.924,
+      "Val_RMSE": 0.6873,
+      "Val_MAE": 0.3391,
+      "Val_R2": 0.9974,
+      "Test_RMSE": 0.6047,
+      "Test_RMSE_Std": 0.0169,
+      "Test_MAE": 0.2986,
+      "Test_R2": 0.9978,
+      "Test_Macro_F1": 0.9478,
+      "Test_PICP_90": 0.9862,
+      "Test_MPIW_90": 2.6331
+    },
+    {
+      "Variant": "dl_mlp_ensemble (5-Seed Deep Ensemble)",
+      "Seeds": "[42, 43, 44, 45, 46]",
+      "Params": 68165,
+      "Train_Time_s": 65.36,
+      "Infer_Time_s": 0.0474,
+      "Val_RMSE": 0.618,
+      "Val_MAE": 0.2855,
+      "Val_R2": 0.9979,
+      "Test_RMSE": 0.5381,
+      "Test_RMSE_Std": 0.0,
+      "Test_MAE": 0.2528,
+      "Test_R2": 0.9982,
+      "Test_Macro_F1": 0.9548,
+      "Test_PICP_90": 0.9043,
+      "Test_MPIW_90": 1.056
+    },
+    {
+      "Variant": "dl_mlp_quantile (Pinball q05/q50/q95, 5-Seed Mean)",
+      "Seeds": "[42, 43, 44, 45, 46]",
+      "Params": 13699,
+      "Train_Time_s": 12.67,
+      "Infer_Time_s": 0.0064,
+      "Val_RMSE": 0.6972,
+      "Val_MAE": 0.3539,
+      "Val_R2": 0.9973,
+      "Test_RMSE": 0.6148,
+      "Test_RMSE_Std": 0.0386,
+      "Test_MAE": 0.3137,
+      "Test_R2": 0.9976,
+      "Test_Macro_F1": 0.9479,
+      "Test_PICP_90": 0.9912,
+      "Test_MPIW_90": 3.4911
+    },
+    {
+      "Variant": "dl_mlp_leakaware (17 Features, Formula Proxies Dropped)",
+      "Seeds": "[42]",
+      "Params": 13121,
+      "Train_Time_s": 8.4,
+      "Infer_Time_s": 0.0076,
+      "Val_RMSE": 0.8119,
+      "Val_MAE": 0.355,
+      "Val_R2": 0.9963,
+      "Test_RMSE": 0.7124,
+      "Test_RMSE_Std": 0.0,
+      "Test_MAE": 0.2803,
+      "Test_R2": 0.9969,
+      "Test_Macro_F1": 0.9251,
+      "Test_PICP_90": null,
+      "Test_MPIW_90": null
+    }
+  ],
+  "dl_mlp_seeds": [
+    {
+      "run_name": "dl_mlp_seed42",
+      "n_parameters": 13633,
+      "best_epoch": 29,
+      "total_epochs_run": 30,
+      "best_val_rmse": 0.6294,
+      "val_metrics": {
+        "MAE": 0.2847,
+        "RMSE": 0.6294,
+        "R2": 0.9978,
+        "Macro_F1": 0.9685
+      },
+      "train_time_sec": 11.896,
+      "val_inference_time_sec": 0.0075,
+      "hyperparameters": {
+        "input_dim": 21,
+        "hidden_dims": [
+          128,
+          64,
+          32
+        ],
+        "activation": "relu",
+        "dropout": 0.1,
+        "batch_norm": true,
+        "learning_rate": 0.003,
+        "weight_decay": 0.0001,
+        "loss_type": "huber",
+        "scheduler": "cosine",
+        "max_grad_norm": 1.0,
+        "epochs": 30,
+        "patience": 8
+      },
+      "seed": 42,
+      "test_metrics": {
+        "MAE": 0.2497,
+        "RMSE": 0.547,
+        "R2": 0.9982,
+        "Macro_F1": 0.9582
+      },
+      "test_inference_time_sec": 0.0079
+    },
+    {
+      "run_name": "dl_mlp_seed43",
+      "n_parameters": 13633,
+      "best_epoch": 29,
+      "total_epochs_run": 30,
+      "best_val_rmse": 0.6542,
+      "val_metrics": {
+        "MAE": 0.2877,
+        "RMSE": 0.6542,
+        "R2": 0.9976,
+        "Macro_F1": 0.9595
+      },
+      "train_time_sec": 11.6224,
+      "val_inference_time_sec": 0.0074,
+      "hyperparameters": {
+        "input_dim": 21,
+        "hidden_dims": [
+          128,
+          64,
+          32
+        ],
+        "activation": "relu",
+        "dropout": 0.1,
+        "batch_norm": true,
+        "learning_rate": 0.003,
+        "weight_decay": 0.0001,
+        "loss_type": "huber",
+        "scheduler": "cosine",
+        "max_grad_norm": 1.0,
+        "epochs": 30,
+        "patience": 8
+      },
+      "seed": 43,
+      "test_metrics": {
+        "MAE": 0.2444,
+        "RMSE": 0.5707,
+        "R2": 0.998,
+        "Macro_F1": 0.9492
+      },
+      "test_inference_time_sec": 0.0075
+    },
+    {
+      "run_name": "dl_mlp_seed44",
+      "n_parameters": 13633,
+      "best_epoch": 22,
+      "total_epochs_run": 30,
+      "best_val_rmse": 0.6701,
+      "val_metrics": {
+        "MAE": 0.3392,
+        "RMSE": 0.6701,
+        "R2": 0.9975,
+        "Macro_F1": 0.959
+      },
+      "train_time_sec": 13.1338,
+      "val_inference_time_sec": 0.0072,
+      "hyperparameters": {
+        "input_dim": 21,
+        "hidden_dims": [
+          128,
+          64,
+          32
+        ],
+        "activation": "relu",
+        "dropout": 0.1,
+        "batch_norm": true,
+        "learning_rate": 0.003,
+        "weight_decay": 0.0001,
+        "loss_type": "huber",
+        "scheduler": "cosine",
+        "max_grad_norm": 1.0,
+        "epochs": 30,
+        "patience": 8
+      },
+      "seed": 44,
+      "test_metrics": {
+        "MAE": 0.3036,
+        "RMSE": 0.5929,
+        "R2": 0.9978,
+        "Macro_F1": 0.9495
+      },
+      "test_inference_time_sec": 0.0079
+    },
+    {
+      "run_name": "dl_mlp_seed45",
+      "n_parameters": 13633,
+      "best_epoch": 30,
+      "total_epochs_run": 30,
+      "best_val_rmse": 0.6637,
+      "val_metrics": {
+        "MAE": 0.3255,
+        "RMSE": 0.6637,
+        "R2": 0.9976,
+        "Macro_F1": 0.9648
+      },
+      "train_time_sec": 12.5008,
+      "val_inference_time_sec": 0.0074,
+      "hyperparameters": {
+        "input_dim": 21,
+        "hidden_dims": [
+          128,
+          64,
+          32
+        ],
+        "activation": "relu",
+        "dropout": 0.1,
+        "batch_norm": true,
+        "learning_rate": 0.003,
+        "weight_decay": 0.0001,
+        "loss_type": "huber",
+        "scheduler": "cosine",
+        "max_grad_norm": 1.0,
+        "epochs": 30,
+        "patience": 8
+      },
+      "seed": 45,
+      "test_metrics": {
+        "MAE": 0.2948,
+        "RMSE": 0.5875,
+        "R2": 0.9979,
+        "Macro_F1": 0.9556
+      },
+      "test_inference_time_sec": 0.0081
+    },
+    {
+      "run_name": "dl_mlp_seed46",
+      "n_parameters": 13633,
+      "best_epoch": 28,
+      "total_epochs_run": 30,
+      "best_val_rmse": 0.6437,
+      "val_metrics": {
+        "MAE": 0.303,
+        "RMSE": 0.6437,
+        "R2": 0.9977,
+        "Macro_F1": 0.9536
+      },
+      "train_time_sec": 16.2087,
+      "val_inference_time_sec": 0.0076,
+      "hyperparameters": {
+        "input_dim": 21,
+        "hidden_dims": [
+          128,
+          64,
+          32
+        ],
+        "activation": "relu",
+        "dropout": 0.1,
+        "batch_norm": true,
+        "learning_rate": 0.003,
+        "weight_decay": 0.0001,
+        "loss_type": "huber",
+        "scheduler": "cosine",
+        "max_grad_norm": 1.0,
+        "epochs": 30,
+        "patience": 8
+      },
+      "seed": 46,
+      "test_metrics": {
+        "MAE": 0.2651,
+        "RMSE": 0.5552,
+        "R2": 0.9981,
+        "Macro_F1": 0.9433
+      },
+      "test_inference_time_sec": 0.016
+    }
+  ],
+  "dl_mlp_mcdropout_seeds": [
+    {
+      "run_name": "dl_mlp_mcdropout_seed42",
+      "seed": 42,
+      "n_passes": 50,
+      "n_parameters": 13633,
+      "train_time_sec": 11.896,
+      "val_inference_time_sec": 1.909,
+      "test_inference_time_sec": 1.8576,
+      "calibration_scale_factor": 1.0,
+      "val_metrics": {
+        "MAE": 0.3191,
+        "RMSE": 0.6656,
+        "R2": 0.9975,
+        "Macro_F1": 0.9617,
+        "PICP_90": 0.9806,
+        "MPIW_90": 2.832,
+        "Gaussian_NLL": 0.8416,
+        "Mean_Std": 1.0084
+      },
+      "test_metrics": {
+        "MAE": 0.2818,
+        "RMSE": 0.5852,
+        "R2": 0.9979,
+        "Macro_F1": 0.9545,
+        "PICP_90": 0.9866,
+        "MPIW_90": 2.5901,
+        "Gaussian_NLL": 0.846,
+        "Mean_Std": 0.9846
+      },
+      "hyperparameters": {
+        "input_dim": 21,
+        "hidden_dims": [
+          128,
+          64,
+          32
+        ],
+        "activation": "relu",
+        "dropout": 0.1,
+        "batch_norm": true,
+        "learning_rate": 0.003,
+        "weight_decay": 0.0001,
+        "loss_type": "huber",
+        "scheduler": "cosine",
+        "max_grad_norm": 1.0,
+        "epochs": 30,
+        "patience": 8
+      }
+    },
+    {
+      "run_name": "dl_mlp_mcdropout_seed43",
+      "seed": 43,
+      "n_passes": 50,
+      "n_parameters": 13633,
+      "train_time_sec": 11.6224,
+      "val_inference_time_sec": 1.9276,
+      "test_inference_time_sec": 1.8581,
+      "calibration_scale_factor": 1.0,
+      "val_metrics": {
+        "MAE": 0.3243,
+        "RMSE": 0.6955,
+        "R2": 0.9973,
+        "Macro_F1": 0.9503,
+        "PICP_90": 0.982,
+        "MPIW_90": 2.9195,
+        "Gaussian_NLL": 0.8091,
+        "Mean_Std": 1.0221
+      },
+      "test_metrics": {
+        "MAE": 0.2752,
+        "RMSE": 0.6095,
+        "R2": 0.9977,
+        "Macro_F1": 0.9407,
+        "PICP_90": 0.9865,
+        "MPIW_90": 2.6141,
+        "Gaussian_NLL": 0.7735,
+        "Mean_Std": 0.9742
+      },
+      "hyperparameters": {
+        "input_dim": 21,
+        "hidden_dims": [
+          128,
+          64,
+          32
+        ],
+        "activation": "relu",
+        "dropout": 0.1,
+        "batch_norm": true,
+        "learning_rate": 0.003,
+        "weight_decay": 0.0001,
+        "loss_type": "huber",
+        "scheduler": "cosine",
+        "max_grad_norm": 1.0,
+        "epochs": 30,
+        "patience": 8
+      }
+    },
+    {
+      "run_name": "dl_mlp_mcdropout_seed44",
+      "seed": 44,
+      "n_passes": 50,
+      "n_parameters": 13633,
+      "train_time_sec": 13.1338,
+      "val_inference_time_sec": 1.8749,
+      "test_inference_time_sec": 1.8592,
+      "calibration_scale_factor": 1.0,
+      "val_metrics": {
+        "MAE": 0.3571,
+        "RMSE": 0.6922,
+        "R2": 0.9973,
+        "Macro_F1": 0.956,
+        "PICP_90": 0.98,
+        "MPIW_90": 2.8191,
+        "Gaussian_NLL": 0.862,
+        "Mean_Std": 1.0048
+      },
+      "test_metrics": {
+        "MAE": 0.319,
+        "RMSE": 0.6151,
+        "R2": 0.9977,
+        "Macro_F1": 0.9514,
+        "PICP_90": 0.9855,
+        "MPIW_90": 2.5887,
+        "Gaussian_NLL": 0.86,
+        "Mean_Std": 0.9843
+      },
+      "hyperparameters": {
+        "input_dim": 21,
+        "hidden_dims": [
+          128,
+          64,
+          32
+        ],
+        "activation": "relu",
+        "dropout": 0.1,
+        "batch_norm": true,
+        "learning_rate": 0.003,
+        "weight_decay": 0.0001,
+        "loss_type": "huber",
+        "scheduler": "cosine",
+        "max_grad_norm": 1.0,
+        "epochs": 30,
+        "patience": 8
+      }
+    },
+    {
+      "run_name": "dl_mlp_mcdropout_seed45",
+      "seed": 45,
+      "n_passes": 50,
+      "n_parameters": 13633,
+      "train_time_sec": 12.5008,
+      "val_inference_time_sec": 1.8822,
+      "test_inference_time_sec": 2.0815,
+      "calibration_scale_factor": 1.0,
+      "val_metrics": {
+        "MAE": 0.3618,
+        "RMSE": 0.7054,
+        "R2": 0.9972,
+        "Macro_F1": 0.957,
+        "PICP_90": 0.9794,
+        "MPIW_90": 3.1164,
+        "Gaussian_NLL": 0.8043,
+        "Mean_Std": 1.063
+      },
+      "test_metrics": {
+        "MAE": 0.3241,
+        "RMSE": 0.6243,
+        "R2": 0.9976,
+        "Macro_F1": 0.9529,
+        "PICP_90": 0.9851,
+        "MPIW_90": 2.7739,
+        "Gaussian_NLL": 0.7714,
+        "Mean_Std": 0.9968
+      },
+      "hyperparameters": {
+        "input_dim": 21,
+        "hidden_dims": [
+          128,
+          64,
+          32
+        ],
+        "activation": "relu",
+        "dropout": 0.1,
+        "batch_norm": true,
+        "learning_rate": 0.003,
+        "weight_decay": 0.0001,
+        "loss_type": "huber",
+        "scheduler": "cosine",
+        "max_grad_norm": 1.0,
+        "epochs": 30,
+        "patience": 8
+      }
+    },
+    {
+      "run_name": "dl_mlp_mcdropout_seed46",
+      "seed": 46,
+      "n_passes": 50,
+      "n_parameters": 13633,
+      "train_time_sec": 16.2087,
+      "val_inference_time_sec": 1.9261,
+      "test_inference_time_sec": 1.9634,
+      "calibration_scale_factor": 1.0,
+      "val_metrics": {
+        "MAE": 0.3333,
+        "RMSE": 0.678,
+        "R2": 0.9975,
+        "Macro_F1": 0.9531,
+        "PICP_90": 0.9816,
+        "MPIW_90": 2.8709,
+        "Gaussian_NLL": 0.821,
+        "Mean_Std": 1.0126
+      },
+      "test_metrics": {
+        "MAE": 0.2928,
+        "RMSE": 0.5892,
+        "R2": 0.9979,
+        "Macro_F1": 0.9394,
+        "PICP_90": 0.9871,
+        "MPIW_90": 2.5985,
+        "Gaussian_NLL": 0.8113,
+        "Mean_Std": 0.9754
+      },
+      "hyperparameters": {
+        "input_dim": 21,
+        "hidden_dims": [
+          128,
+          64,
+          32
+        ],
+        "activation": "relu",
+        "dropout": 0.1,
+        "batch_norm": true,
+        "learning_rate": 0.003,
+        "weight_decay": 0.0001,
+        "loss_type": "huber",
+        "scheduler": "cosine",
+        "max_grad_norm": 1.0,
+        "epochs": 30,
+        "patience": 8
+      }
+    }
+  ],
+  "dl_mlp_ensemble": {
+    "run_name": "dl_mlp_ensemble_5seeds",
+    "seeds": [
+      42,
+      43,
+      44,
+      45,
+      46
+    ],
+    "n_members": 5,
+    "n_parameters_per_member": 13633,
+    "n_parameters_total": 68165,
+    "total_train_time_sec": 65.3617,
+    "val_inference_time_sec": 0.0371,
+    "test_inference_time_sec": 0.0474,
+    "calibration_scale_factor": 2.6878,
+    "val_metrics": {
+      "MAE": 0.2855,
+      "RMSE": 0.618,
+      "R2": 0.9979,
+      "Macro_F1": 0.9648,
+      "PICP_90": 0.9,
+      "MPIW_90": 1.2291,
+      "Gaussian_NLL": 0.379,
+      "Mean_Std": 0.3843
+    },
+    "test_metrics": {
+      "MAE": 0.2528,
+      "RMSE": 0.5381,
+      "R2": 0.9982,
+      "Macro_F1": 0.9548,
+      "PICP_90": 0.9043,
+      "MPIW_90": 1.056,
+      "Gaussian_NLL": 0.9793,
+      "Mean_Std": 0.3318
+    }
+  },
+  "dl_mlp_quantile_seeds": [
+    {
+      "run_name": "dl_mlp_quantile_seed42",
+      "seed": 42,
+      "n_parameters": 13699,
+      "best_epoch": 24,
+      "train_time_sec": 15.1095,
+      "val_inference_time_sec": 0.0063,
+      "test_inference_time_sec": 0.0062,
+      "conformal_padding": 0.0,
+      "val_metrics": {
+        "MAE": 0.3374,
+        "RMSE": 0.6602,
+        "R2": 0.9976,
+        "Macro_F1": 0.9569,
+        "PICP_90": 0.9896,
+        "MPIW_90": 3.9715,
+        "Gaussian_NLL": 0.9455,
+        "Mean_Std": 1.2072
+      },
+      "test_metrics": {
+        "MAE": 0.308,
+        "RMSE": 0.586,
+        "R2": 0.9979,
+        "Macro_F1": 0.9583,
+        "PICP_90": 0.9914,
+        "MPIW_90": 3.5269,
+        "Gaussian_NLL": 0.8315,
+        "Mean_Std": 1.0721
+      },
+      "hyperparameters": {
+        "input_dim": 21,
+        "hidden_dims": [
+          128,
+          64,
+          32
+        ],
+        "activation": "relu",
+        "dropout": 0.1,
+        "batch_norm": true,
+        "output_dim": 3,
+        "quantiles": [
+          0.05,
+          0.5,
+          0.95
+        ],
+        "learning_rate": 0.003,
+        "weight_decay": 0.0001,
+        "batch_size": 1024
+      }
+    },
+    {
+      "run_name": "dl_mlp_quantile_seed43",
+      "seed": 43,
+      "n_parameters": 13699,
+      "best_epoch": 26,
+      "train_time_sec": 12.6196,
+      "val_inference_time_sec": 0.0062,
+      "test_inference_time_sec": 0.0064,
+      "conformal_padding": 0.0,
+      "val_metrics": {
+        "MAE": 0.3367,
+        "RMSE": 0.6809,
+        "R2": 0.9974,
+        "Macro_F1": 0.9589,
+        "PICP_90": 0.9902,
+        "MPIW_90": 4.0087,
+        "Gaussian_NLL": 0.9292,
+        "Mean_Std": 1.2185
+      },
+      "test_metrics": {
+        "MAE": 0.2927,
+        "RMSE": 0.5935,
+        "R2": 0.9978,
+        "Macro_F1": 0.95,
+        "PICP_90": 0.9923,
+        "MPIW_90": 3.5408,
+        "Gaussian_NLL": 0.8095,
+        "Mean_Std": 1.0763
+      },
+      "hyperparameters": {
+        "input_dim": 21,
+        "hidden_dims": [
+          128,
+          64,
+          32
+        ],
+        "activation": "relu",
+        "dropout": 0.1,
+        "batch_norm": true,
+        "output_dim": 3,
+        "quantiles": [
+          0.05,
+          0.5,
+          0.95
+        ],
+        "learning_rate": 0.003,
+        "weight_decay": 0.0001,
+        "batch_size": 1024
+      }
+    },
+    {
+      "run_name": "dl_mlp_quantile_seed44",
+      "seed": 44,
+      "n_parameters": 13699,
+      "best_epoch": 28,
+      "train_time_sec": 12.9146,
+      "val_inference_time_sec": 0.006,
+      "test_inference_time_sec": 0.0066,
+      "conformal_padding": 0.0,
+      "val_metrics": {
+        "MAE": 0.3475,
+        "RMSE": 0.7095,
+        "R2": 0.9972,
+        "Macro_F1": 0.9594,
+        "PICP_90": 0.989,
+        "MPIW_90": 3.9993,
+        "Gaussian_NLL": 0.9366,
+        "Mean_Std": 1.2157
+      },
+      "test_metrics": {
+        "MAE": 0.3017,
+        "RMSE": 0.6204,
+        "R2": 0.9976,
+        "Macro_F1": 0.9487,
+        "PICP_90": 0.9911,
+        "MPIW_90": 3.5144,
+        "Gaussian_NLL": 0.7975,
+        "Mean_Std": 1.0683
+      },
+      "hyperparameters": {
+        "input_dim": 21,
+        "hidden_dims": [
+          128,
+          64,
+          32
+        ],
+        "activation": "relu",
+        "dropout": 0.1,
+        "batch_norm": true,
+        "output_dim": 3,
+        "quantiles": [
+          0.05,
+          0.5,
+          0.95
+        ],
+        "learning_rate": 0.003,
+        "weight_decay": 0.0001,
+        "batch_size": 1024
+      }
+    },
+    {
+      "run_name": "dl_mlp_quantile_seed45",
+      "seed": 45,
+      "n_parameters": 13699,
+      "best_epoch": 15,
+      "train_time_sec": 9.744,
+      "val_inference_time_sec": 0.006,
+      "test_inference_time_sec": 0.0067,
+      "conformal_padding": 0.0,
+      "val_metrics": {
+        "MAE": 0.3944,
+        "RMSE": 0.7597,
+        "R2": 0.9968,
+        "Macro_F1": 0.9444,
+        "PICP_90": 0.9872,
+        "MPIW_90": 3.8792,
+        "Gaussian_NLL": 0.9561,
+        "Mean_Std": 1.1792
+      },
+      "test_metrics": {
+        "MAE": 0.3532,
+        "RMSE": 0.6799,
+        "R2": 0.9971,
+        "Macro_F1": 0.9351,
+        "PICP_90": 0.9893,
+        "MPIW_90": 3.4401,
+        "Gaussian_NLL": 0.8421,
+        "Mean_Std": 1.0457
+      },
+      "hyperparameters": {
+        "input_dim": 21,
+        "hidden_dims": [
+          128,
+          64,
+          32
+        ],
+        "activation": "relu",
+        "dropout": 0.1,
+        "batch_norm": true,
+        "output_dim": 3,
+        "quantiles": [
+          0.05,
+          0.5,
+          0.95
+        ],
+        "learning_rate": 0.003,
+        "weight_decay": 0.0001,
+        "batch_size": 1024
+      }
+    },
+    {
+      "run_name": "dl_mlp_quantile_seed46",
+      "seed": 46,
+      "n_parameters": 13699,
+      "best_epoch": 27,
+      "train_time_sec": 12.9767,
+      "val_inference_time_sec": 0.0061,
+      "test_inference_time_sec": 0.0062,
+      "conformal_padding": 0.0,
+      "val_metrics": {
+        "MAE": 0.3534,
+        "RMSE": 0.6759,
+        "R2": 0.9975,
+        "Macro_F1": 0.9611,
+        "PICP_90": 0.9896,
+        "MPIW_90": 3.882,
+        "Gaussian_NLL": 0.9159,
+        "Mean_Std": 1.18
+      },
+      "test_metrics": {
+        "MAE": 0.3131,
+        "RMSE": 0.5944,
+        "R2": 0.9978,
+        "Macro_F1": 0.9474,
+        "PICP_90": 0.9919,
+        "MPIW_90": 3.4333,
+        "Gaussian_NLL": 0.7946,
+        "Mean_Std": 1.0437
+      },
+      "hyperparameters": {
+        "input_dim": 21,
+        "hidden_dims": [
+          128,
+          64,
+          32
+        ],
+        "activation": "relu",
+        "dropout": 0.1,
+        "batch_norm": true,
+        "output_dim": 3,
+        "quantiles": [
+          0.05,
+          0.5,
+          0.95
+        ],
+        "learning_rate": 0.003,
+        "weight_decay": 0.0001,
+        "batch_size": 1024
+      }
+    }
+  ],
+  "dl_mlp_leakaware": {
+    "run_name": "dl_mlp_leakaware_seed42",
+    "n_parameters": 13121,
+    "best_epoch": 11,
+    "total_epochs_run": 19,
+    "best_val_rmse": 0.8119,
+    "val_metrics": {
+      "MAE": 0.355,
+      "RMSE": 0.8119,
+      "R2": 0.9963,
+      "Macro_F1": 0.9423
+    },
+    "train_time_sec": 8.3985,
+    "val_inference_time_sec": 0.0072,
+    "hyperparameters": {
+      "input_dim": 17,
+      "hidden_dims": [
+        128,
+        64,
+        32
+      ],
+      "activation": "relu",
+      "dropout": 0.1,
+      "batch_norm": true,
+      "learning_rate": 0.003,
+      "weight_decay": 0.0001,
+      "loss_type": "huber",
+      "scheduler": "cosine",
+      "max_grad_norm": 1.0,
+      "epochs": 30,
+      "patience": 8
+    },
+    "test_metrics": {
+      "MAE": 0.2803,
+      "RMSE": 0.7124,
+      "R2": 0.9969,
+      "Macro_F1": 0.9251
+    },
+    "test_inference_time_sec": 0.0076,
+    "dropped_features": [
+      "do_deficit",
+      "log_np_ratio",
+      "nitrate_to_n_ratio",
+      "ph_dist_buffer"
+    ],
+    "remaining_features": [
+      "Ammonia (mg/l)",
+      "Biochemical Oxygen Demand (mg/l)",
+      "Dissolved Oxygen (mg/l)",
+      "Orthophosphate (mg/l)",
+      "pH (ph units)",
+      "Temperature (cel)",
+      "Nitrogen (mg/l)",
+      "Nitrate (mg/l)",
+      "log1p_ammonia",
+      "log1p_biochemical",
+      "log1p_orthophosphate",
+      "log1p_nitrogen",
+      "log1p_nitrate",
+      "do_sat_ratio",
+      "ph_dev_neutral",
+      "month_sin",
+      "month_cos"
+    ]
+  }
+}

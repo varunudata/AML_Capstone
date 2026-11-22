@@ -108,7 +108,7 @@ def predict_mc_dropout(
     model: WaterQualityMLP,
     X: np.ndarray,
     n_passes: int = 50,
-    batch_size: int = 4096,
+    batch_size: int = 50000,
     seed: int = 42,
     clip_bounds: Tuple[float, float] = (0.0, 100.0),
 ) -> Dict[str, Any]:
@@ -612,9 +612,9 @@ def run_final_phase2_suite(
         "activation": "relu",
         "batch_norm": True,
         "dropout": 0.1,
-        "learning_rate": 0.0025,
+        "learning_rate": 0.003,
         "weight_decay": 0.0001,
-        "batch_size": 512,
+        "batch_size": 1024,
         "loss_type": "huber",
     })
 
@@ -980,4 +980,4 @@ def run_final_phase2_suite(
 
 if __name__ == "__main__":
     cfg_loaded = load_config()
-    run_final_phase2_suite(cfg_loaded, final_epochs=35, mc_passes=50, mock=False)
+    run_final_phase2_suite(cfg_loaded, final_epochs=30, mc_passes=50, mock=False)
