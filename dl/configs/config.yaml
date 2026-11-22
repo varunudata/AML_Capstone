@@ -132,3 +132,6 @@ evaluation:
   shap_sample_size: 500
   seed: 42
   bootstrap_draws: 1000
+  interval_coverage: 0.90
+  interval_levels: [0.50, 0.70, 0.80, 0.90, 0.95, 0.99]
+  wqi_bounds: [0, 100]
